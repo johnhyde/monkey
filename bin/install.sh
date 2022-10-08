@@ -38,7 +38,7 @@ sync() {
     rsync -r --copy-links --exclude-from=$EXCLUDE_FILE "${cdir}"/../docs-dev-desk/* $DESK_DIR/
     rsync -r --copy-links --exclude-from=$EXCLUDE_FILE "${cdir}"/../desk/* $DESK_DIR/
     if [ "$GLOBBER" ]; then
-        rsync -r --copy-links "${cdir}"/../ui/dist/* $DESK_DIR/astrolabe
+        rsync -r --copy-links "${cdir}"/../ui/dist/* $DESK_DIR/monkey
     fi
 }
 
@@ -55,12 +55,12 @@ while getopts "wg" opt; do
 done
 
 if [ -z "$WATCH_MODE" ]; then
-    echo "Installed %astrolabe to ${DESK_DIR}"
+    echo "Installed %monkey to ${DESK_DIR}"
     rm -r $DESK_DIR/*
     sync
     lensa 'hood' "+hood/commit %$DESK"
     if [ "$GLOBBER" ]; then
-        lensd '-garden!make-glob %globber /astrolabe'
+        lensd '-garden!make-glob %globber /monkey'
         GLOBS="$PIER/.urb/put"
         GLOB=$(ls -t $GLOBS | head -1)
         TARGET_GLOBS="$cdir"/../globs/

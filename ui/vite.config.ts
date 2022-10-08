@@ -11,7 +11,7 @@ export default ({ mode }) => {
 
   return defineConfig({
     plugins: [
-      urbitPlugin({ base: 'astrolabe', target: SHIP_URL, secure: false }),
+      urbitPlugin({ base: 'monkey', target: SHIP_URL, secure: false }),
       svelte(),
     ],
     resolve: {

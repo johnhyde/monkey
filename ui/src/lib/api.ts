@@ -2,8 +2,9 @@ import UrbitApi from '@urbit/http-api';
 import type { ContactUpdate, Patp, Group, Contact, Rolodex } from '@urbit/api';
 import _get from 'lodash/get';
 import { compose } from 'lodash/fp';
+import { wrapJS } from 'lib/utils';
+import examplePatch from '~/fake_data/examplePatch.js?raw';
 
-import { normalizeId } from './id';
 
 console.log(`Initializing Urbit API at ${Date()}`);
 const api: UrbitApi = new UrbitApi('', '', window.desk);
@@ -11,7 +12,16 @@ api.ship = window.ship;
 // api.connect();
 
 export function scry<T = any>(path: string): Promise<T> {
-  return api.scry<T>({ app: 'astrolabe', path });
+  return api.scry<T>({ app: 'monkey', path });
+}
+
+export async function getPatches(app: string): Promise<any> {
+  // return scry<any>(`/patches/${app}`);
+  return [
+    `window.hacked = "heck yeah, brother: " + ${JSON.stringify(app)};`,
+    'window.hacked = "heck yeah, brother;',
+    examplePatch,
+  ].map((code, index) => wrapJS(code, index));
 }
 
 export function getPoint(patp: string): Promise<any> {
@@ -26,10 +36,10 @@ export function getPeers(): Promise<any> {
   return scry<any>(`/peers`);
 }
 
-export async function searchPoints(search: string, mode: ('patp' | 'sigil')): Promise<Patp[]> {
-  const { points } = await scry<any>(`/search/${mode}/${search}`);
-  return points.map(normalizeId);
-}
+// export async function searchPoints(search: string, mode: ('patp' | 'sigil')): Promise<Patp[]> {
+//   const { points } = await scry<any>(`/search/${mode}/${search}`);
+//   return points.map(normalizeId);
+// }
 
 export function getChartData(old = false): Promise<any> {
   return scry<any>('/chart-data' + (old ? '-old' : ''));

@@ -5,35 +5,35 @@
       "orientation": 0,
       "documents": [
         {
-          "fsPath": "/Users/john/ws/urbit-apps/astrolabe/desk/sur/astrolabe.hoon",
+          "fsPath": "/Users/john/ws/urbit-apps/monkey/desk/sur/monkey.hoon",
           "column": 1
         },
         {
-          "fsPath": "/Users/john/ws/urbit-apps/astrolabe/desk/app/astrolabe.hoon",
+          "fsPath": "/Users/john/ws/urbit-apps/monkey/desk/app/monkey.hoon",
           "column": 1
         },
         {
-          "fsPath": "/Users/john/ws/urbit-apps/astrolabe/extras/scraps/json-lib.hoon",
+          "fsPath": "/Users/john/ws/urbit-apps/monkey/extras/scraps/json-lib.hoon",
           "column": 2
         },
         {
-          "fsPath": "/Users/john/ws/urbit-apps/astrolabe/base-desk/lib/naive.hoon",
+          "fsPath": "/Users/john/ws/urbit-apps/monkey/base-desk/lib/naive.hoon",
           "column": 3
         },
         {
-          "fsPath": "/Users/john/ws/urbit-apps/astrolabe/extras/scraps/scry thoughts.txt",
+          "fsPath": "/Users/john/ws/urbit-apps/monkey/extras/scraps/scry thoughts.txt",
           "column": 3
         },
         {
-          "fsPath": "/Users/john/ws/urbit-apps/astrolabe/desk/mar/astrolabe/point.hoon",
+          "fsPath": "/Users/john/ws/urbit-apps/monkey/desk/mar/monkey/point.hoon",
           "column": 4
         },
         {
-          "fsPath": "/Users/john/ws/urbit-apps/astrolabe/install.sh",
+          "fsPath": "/Users/john/ws/urbit-apps/monkey/install.sh",
           "column": 5
         },
         {
-          "fsPath": "/Users/john/ws/urbit-apps/astrolabe/desk/lib/astrolabe.hoon",
+          "fsPath": "/Users/john/ws/urbit-apps/monkey/desk/lib/monkey.hoon",
           "column": 5
         }
       ]
@@ -43,7 +43,7 @@
       "orientation": 0,
       "documents": [
         {
-          "fsPath": "/Users/john/ws/urbit-apps/astrolabe/ui/src/components/ShipView.svelte",
+          "fsPath": "/Users/john/ws/urbit-apps/monkey/ui/src/components/ShipView.svelte",
           "column": 1
         }
       ]

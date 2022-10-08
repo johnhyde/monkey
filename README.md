@@ -1,12 +1,12 @@
-# Astrolabe
-Astrolabe (%astrolabe) is a one-stop shop %docket app for exploring Urbit address space. Main features: ID Search, Sigil Search, Sky Chart, and Ship View (for viewing a given ship's details). Astrolabe integrates with %pals wherever possible, and contains documentation to explain the many quirks of Urbit address space to a new user.
+# Monkey
+Monkey (%monkey) is a one-stop shop %docket app for exploring Urbit address space. Main features: ID Search, Sigil Search, Sky Chart, and Ship View (for viewing a given ship's details). Monkey integrates with %pals wherever possible, and contains documentation to explain the many quirks of Urbit address space to a new user.
 
 # Justification
 There should be a place on Urbit to explore Urbit address space. It will help new Urbiters get their bearings, and be a useful tool for anyone who wants to explore. Having open-source tools for this in one place _on Urbit_ is important.
-I like the name _Astrolabe_, because it's an old-timey guide to the heavenly bodies. _Planisphere_ could also be cool.
+I like the name _Monkey_, because it's an old-timey guide to the heavenly bodies. _Planisphere_ could also be cool.
 
 # Proposal
-You can read about the proposal [here](https://urbit.org/grants/astrolabe), and discuss in the dedicated group on Urbit: `~poster-hoster-midlev-mindyr/astrolabe`
+You can read about the proposal [here](https://urbit.org/grants/monkey), and discuss in the dedicated group on Urbit: `~poster-hoster-midlev-mindyr/monkey`
 
 # The Code
 ## Desk
@@ -15,11 +15,11 @@ The desk currently has the minimum amount of files necessary to distribute an ap
 
 ## UI
 
-Astrolabe is built primarily using [Svelte], [Typescript], and [Tailwind CSS]. [Vite] ensures that all code and assets are loaded appropriately, bundles the application for distribution and provides a functional dev environment.
+Monkey is built primarily using [Svelte], [Typescript], and [Tailwind CSS]. [Vite] ensures that all code and assets are loaded appropriately, bundles the application for distribution and provides a functional dev environment.
 
 ### Getting Started
 
-To get started using Astrolabe first you need to run `npm install` inside the `ui` directory.
+To get started using Monkey first you need to run `npm install` inside the `ui` directory.
 
 To develop you'll need a running ship to point to. If it's running somewhere other than `http://localhost:8081`, make a copy of `.env` in the `ui` directory and name it `.env.local`. This file will not be committed. Change `VITE_SHIP_URL` to the URL of the ship you would like to point to.
 
@@ -30,20 +30,20 @@ Regardless of what you run to develop, Vite will hot-reload code changes as you 
 # Deploying
 
 1. Spin up a comet or distribution ship.
-2. Mount an `%astrolabe` desk. In Dojo:
-    1. `|merge %astrolabe our %base` to create a new desk.
-    2. `|mount %astrolabe` to mount it.
-    3. Set `ASTROLABE_DESK` in `.env.local` if the path to your desk is different.
+2. Mount an `%monkey` desk. In Dojo:
+    1. `|merge %monkey our %base` to create a new desk.
+    2. `|mount %monkey` to mount it.
+    3. Set `MONKEY_DESK` in `.env.local` if the path to your desk is different.
 3. Create and upload `glob-http`, if applicable (see below)
 3. Install the desk
     1. From the `ui` folder: `npm run install:desk`
-    2. From the distribution ship's dojo: `:treaty|unpublish %astrolabe`
-    2. From middleman or distribution ship's dojo: `|commit %astrolabe`
-    3. (if using a comet as a middleman) `|public %astrolabe`
-    4. (if using a comet as a middleman) from the actual distribution ship: `|install ~comet-name %astrolabe` or `|resume %astrolabe`
-    5. (if using a comet as a middleman) from the actual distribution ship: `|pause %astrolabe`
+    2. From the distribution ship's dojo: `:treaty|unpublish %monkey`
+    2. From middleman or distribution ship's dojo: `|commit %monkey`
+    3. (if using a comet as a middleman) `|public %monkey`
+    4. (if using a comet as a middleman) from the actual distribution ship: `|install ~comet-name %monkey` or `|resume %monkey`
+    5. (if using a comet as a middleman) from the actual distribution ship: `|pause %monkey`
 4. Build UI and upload `glob-ames` 
-5. Publish the desk from dojo: `:treaty|publish %astrolabe`
+5. Publish the desk from dojo: `:treaty|publish %monkey`
 
 ## Deploying with `glob-ames` glob
 Initial Setup:

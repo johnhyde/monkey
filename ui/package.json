@@ -1,5 +1,5 @@
 {
-  "name": "urbit-astrolabe",
+  "name": "urbit-monkey",
   "type": "module",
   "version": "0.3.0",
   "scripts": {
@@ -12,15 +12,15 @@
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "_install:glob": "../bin/install.sh -g $GLOBBER_DESK",
-    "_install:desk": "../bin/install.sh $ASTROLABE_DESK",
-    "_install:desk:watch": "../bin/install.sh -w $ASTROLABE_DESK",
+    "_install:desk": "../bin/install.sh $MONKEY_DESK",
+    "_install:desk:watch": "../bin/install.sh -w $MONKEY_DESK",
     "install:glob": "dotenv -c local npm run _install:glob",
     "install:desk": "dotenv -c local npm run _install:desk",
     "install:desk:watch": "dotenv -c local npm run _install:desk:watch",
     "release": "npm run build && npm run install:glob",
     "_get-glob": "../bin/get_glob.sh $GLOBBER_DESK",
     "get-glob": "dotenv -c local npm run _get-glob",
-    "_commit": "../bin/commit.sh $ASTROLABE_DESK",
+    "_commit": "../bin/commit.sh $MONKEY_DESK",
     "commit": "dotenv -c local npm run _commit"
   },
   "devDependencies": {
@@ -43,18 +43,8 @@
     "vite": "^2.7.2"
   },
   "dependencies": {
-    "@johnhyde/legil-js": "file:../../legil-js",
-    "@johnhyde/sigil-js": "github:johnhyde/sigil-js",
-    "@tlon/phonemes-js": "^1.0.0",
-    "@tlon/sigil-js": "^1.4.5",
     "@urbit/api": "^2.1.0",
     "@urbit/http-api": "^2.1.0",
-    "bn.js": "^5.2.0",
-    "graphology": "^0.24.1",
-    "lodash": "^4.17.21",
-    "sigma": "^2.3.1",
-    "svelte-copy-to-clipboard": "^0.2.5",
-    "tippy.js": "^6.3.7",
-    "urbit-ob": "^5.0.1"
+    "lodash": "^4.17.21"
   }
 }
