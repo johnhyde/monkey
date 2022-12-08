@@ -6,10 +6,26 @@
   ==
 +$  state-0
   $:  %0
-    slivs=(map path sliv)
+    shirts=(map path shirt)
+    uggs=(map path ugg)
   ==
 ::
-+$  sliv  [cuff=(unit binding:eyre) app=term]
++$  shirt
+  $:  =job
+      sliv
+  ==
++$  sliv
+  $:  cuff=(unit binding:eyre)
+      app=term
+  ==
++$  job  ?(%redirect-ug %relay)
++$  ugg  @t  :: the url to attach urbitgraph data to, e.g. '/apps/monkey?ref='
+::
++$  request-line
+  $:  [ext=(unit @ta) site=(list @t)]
+      args=(list [key=@t value=@t])
+  ==
+::
 +$  card  card:agent:gall
 --
 %-  agent:dbug
@@ -24,8 +40,14 @@
 ::
 ++  on-init
   ^-  (quip card _this)
+  =^  cards  state
+      (bind-path:hc /apps/grid/perma %redirect-ug)
   :_  this
-  [%pass /eyre-test %arvo %e %connect [~ /apps/astrolabe] %monkey]~
+  cards
+  :: :~
+  ::   [%pass /eyre-test %arvo %e %connect [~ /apps/astrolabe] %monkey]
+  ::   [%pass /eyre-test %arvo %e %connect [~ /apps/] %monkey]
+  :: ==
 ::
 ++  on-save  !>(state)
 ++  on-load
@@ -33,8 +55,11 @@
   ^-  (quip card _this)
   =/  old  !<(versioned-state old-state)
   :: =/  old  *state-0
-  :_  this(state old)
-  ~
+  =.  state  old
+  :: =^  cards  state
+  ::     (bind-path:hc /apps/grid/perma %redirect-ug)
+  :: cards^this
+  `this
   :: :~
   ::   :: [%pass /eyre-test %arvo %e %connect [~ /apps/astrolabe] %monkey]
   ::   :: [%pass /eyre-test %arvo %e %connect [~ /pals] %pals]
@@ -46,57 +71,95 @@
   ?+    mark  (on-poke:def mark vase)
       %bind
     =+  !<(=path vase)
-    =/  sliv  (get-sliv-for-path-from-bindings:hc path)
-    ?~  sliv  `this
-    =.  slivs.state
-      (~(put by slivs.state) path u.sliv)
-    :_  this
-    [%pass /eyre-test %arvo %e %connect [~ path] %monkey]~
+    =^  cards  state
+      (bind-path:hc path *job)
+    [cards this]
       %unbind
     =+  !<(=path vase)
-    =/  sliv  (~(get by slivs.state) path)
-    ?~  sliv  `this
+    =/  shirt  (~(get by shirts.state) path)
+    ?~  shirt
+      ~&  "no shirt found, not unbinding"
+      `this
+    ~&  "found shirt"
     =/  cards
-      ?~  cuff.u.sliv
+      ?~  cuff.u.shirt
+        ~&  "no cuff!"
         [%pass /eyre-test %arvo %e %disconnect [~ path]]~
-      [%pass /eyre-test %arvo %e %connect u.cuff.u.sliv app.u.sliv]~
-    =.  slivs.state
-      (~(del by slivs.state) path)
+      ~&  "cuff found, rebind to cuff"
+      [%pass /eyre-test %arvo %e %connect u.cuff.u.shirt app.u.shirt]~
+    =.  shirts.state
+      (~(del by shirts.state) path)
     [cards this]
       %unbind-app
     =+  !<(app=term vase)
     :_  this
     [%pass /eyre-test %arvo %e %disconnect [~ /apps/[app]]]~
+      ::
+      %bind-ug
+    =+  !<([=path =ugg] vase)
+    =/  forbidden-root
+      ?|
+        ?&(=(~ +.path) (start-eq:hc -.path 'groups'))
+        (start-eq:hc '~' -.path)
+      ==
+    ?:  forbidden-root
+      ~|(%illegal-ugg-path !!)
+    =.  uggs
+      (~(put by uggs) path ugg)
+    `this
+      ::
+      %unbind-ug
+    =+  !<(=path vase)
+    =.  uggs
+      (~(del by uggs) path)
+    `this
+      ::
+      %bind-force
+    =+  !<(=path vase)
+    :_  this
+    [%pass /eyre-test %arvo %e %connect [~ path] %monkey]~
+      %unbind-force
+    =+  !<(=path vase)
+    :_  this
+    [%pass /eyre-test %arvo %e %disconnect [~ path]]~
       %handle-http-request
     =+  !<([eyre-id=@ta req=inbound-request:eyre] vase)
     ?~  &(authenticated.req secure.req)  !!
-    =/  path  site:(parse-request-line url.request.req)
+    =/  req-line  (parse-request-line url.request.req)
+    =*  path  site.req-line
     ~&  url.request.req
     ~&  path
-    :: =/  sliv  (~(get by slivs.state) path)
-    =/  sliv  (get-sliv-for-path-from-slivs path)
-    ~&  sliv
+    ~&  args.req-line
+    :: =/  shirt  (~(get by shirts.state) path)
+    =/  shirt  (get-shirt-for-path-from-shirts path)
+    ~&  shirt
     :: =/  res  'hello, world'
     =/  paths  ~[/http-response/[eyre-id]]
     :_  this
-    ?~  sliv
+    ?~  shirt
       ~&  "attempting to send 500"
       :~
         [%give %fact paths %http-response-header !>(`response-header:http`[500 ~])]
         [%give %fact paths %http-response-data !>(*(unit octs))]
         [%give %kick paths ~]
       ==
-    :~
-      [%pass /relay/[eyre-id] %agent [our.bowl app.u.sliv] %watch /http-response/[eyre-id]]
-      [%pass /relay/[eyre-id] %agent [our.bowl app.u.sliv] %poke [mark vase]]
-      ::  :*
-      ::   %give
-      ::   %fact
-      ::   paths
-      ::   %http-response-data
-      ::   !>(`(unit octs)``[(met 3 res) res])
-      :: ==
-      :: [%give %kick paths ~]
+    =/  relay-cards
+      :~
+        [%pass /relay/[eyre-id] %agent [our.bowl app.u.shirt] %watch /http-response/[eyre-id]]
+        [%pass /relay/[eyre-id] %agent [our.bowl app.u.shirt] %poke [mark vase]]
+      ==
+    ?-  job.u.shirt
+        %relay  relay-cards
+        %redirect-ug
+      =/  url  (don-uggs:hc req-line)
+      ?~  url  relay-cards
+      =/  headers  ['Location' u.url]~
+      ~&  "attempting to redirect"
+      :~
+        [%give %fact paths %http-response-header !>(`response-header:http`[303 headers])]
+        [%give %fact paths %http-response-data !>(*(unit octs))]
+        [%give %kick paths ~]
+      ==
     ==
   ==
 ++  on-watch
@@ -181,16 +244,67 @@
 ::     %-  (slog p.mme)
 ::     ~
 ::   `(crip (en-xml:html p.mme))::  +find-suffix: returns [~ /tail] if :full is (weld :prefix /tail)
-++  get-sliv-for-path-from-slivs
+++  bind-path
+  |=  [=path =job]
+    ^-  (quip card _state)
+    =/  sliv  (get-sliv-for-path-from-bindings path)
+    ~&  "try to bind"
+    ?~  sliv  `state
+    ~&  "found sliv"
+    ?:  &(=(%monkey app.u.sliv) !=(cuff.u.sliv ~))
+      ~|(%attempted-direct-double-monkey-bind !!)
+    =.  shirts.state
+      (~(put by shirts.state) path [job u.sliv])
+    :_  state
+    [%pass /eyre-test %arvo %e %connect [~ path] %monkey]~
+::
+++  don-uggs
+  |=  req=request-line
+  ^-  (unit @t)
+  =/  ext
+    %-  %~  get  by
+      (malt args.req)
+    'ext'
+  ~&  "got ext"
+  ~&  ext
+  ?~  ext  ~
+  :: split off 'web+urbitgraph:/'
+  :: keep end / to check w/ path
+  :: =/  sock  +:(trim 16 (trip ext))
+  =/  sock=@t  (rsh [3 16] u.ext)
+  ~&  "got sock"
+  ~&  sock
+  ?~  sock  ~
+  =/  shoes  ~(tap by uggs)
+  ~&  "got shoes"
+  ~&  shoes
+  =/  shoe-box
+    |-
+    ^-  (unit [sole=@t =ugg])
+    ?~  shoes  ~
+    =/  sole  (spat p.i.shoes)
+    ~&  "got sole"
+    ~&  sole
+    ?:  (start-eq sole sock)
+      `[sole q.i.shoes]
+    $(shoes t.shoes)
+  ~&  "got shoe box"
+  ~&  shoe-box
+  ?~  shoe-box  ~
+  =*  shoe  u.shoe-box
+  =/  hem  (rsh [3 (met 3 sole.shoe)] sock)
+  `(cat 3 ugg.shoe hem)
+::
+++  get-shirt-for-path-from-shirts
   |=  =path
-  ^-  (unit sliv)
-  =/  slivs  ~(tap by slivs.state)
-  |-  ^-  (unit sliv)
-  ?~  slivs  ~
-  =/  suffix  (find-suffix p.i.slivs path)
+  ^-  (unit shirt)
+  =/  shirts  ~(tap by shirts.state)
+  |-  ^-  (unit shirt)
+  ?~  shirts  ~
+  =/  suffix  (find-suffix p.i.shirts path)
   ?~  suffix
-    $(slivs t.slivs)
-  `q.i.slivs
+    $(shirts t.shirts)
+  `q.i.shirts
 ::
 ++  get-sliv-for-path-from-bindings
   |=  =path
@@ -205,6 +319,7 @@
   ?.  ?=([%app app=term] action)
     ~
   :-  ~
+  ^-  sliv
   :_  +.action
   ?~  u.suffix
     (some binding.i.bindings)
@@ -223,8 +338,18 @@
 ::
 ++  parse-request-line
   |=  url=@t
-  ^-  [[ext=(unit @ta) site=(list @t)] args=(list [key=@t value=@t])]
+  ^-  request-line
   (fall (rush url ;~(plug apat:de-purl:html yque:de-purl:html)) [[~ ~] ~])
+::
+++  ta-to-octs
+  |=  text=@ta
+  ^-  octs
+  [(met 3 text) text]
+::
+++  start-eq
+  |=  [sm=@ta bg=@ta]
+  .=  sm
+  (end [3 (met 3 sm)] bg)
 ::
 ++  example-patch
 '''
