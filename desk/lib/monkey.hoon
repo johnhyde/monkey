@@ -3,8 +3,11 @@
 =<  [sur .]
 =,  sur
 |%
+++  maybe-apply-patch
+  |=  [=patch data=octs]
+  (patch-response-data data thatch.patch)
 ++  patch-response-data
-  |=  [=wire data=octs patch=@t]
+  |=  [data=octs patch=@t]
   ^-  octs
   =/  text  ((sand %t) q.data)
   ?~  text  data

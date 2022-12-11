@@ -1,0 +1,83 @@
+;>
+# How to handle web+urbitgraph:// links in your app
+
+Monkey binds to Eyre in a sneaky way so it can intercept web+urbitgraph:// links
+and redirect to your app when appropriate.
+
+## %bind-ug
+
+Cage structure: `[%bind-ug !>([=path ugg=@t])]`
+Poke Monkey with the `%bind-ug` mark to bind your app to an urbitgraph path.
+
+Gall example:
+
+```
+:: example poke card from %astrolabe
+=/  ug-vase  !>([/astrolabe '/apps/astrolabe/#'])
+=/  card  [%pass /any/wire %agent [our.bowl %monkey] %poke [%bind-ug ug-vase]]
+```
+
+Dojo example:
+
+`:monkey &bind-ug [/astrolabe '/apps/astrolabe/#']`
+
+The `path` will be used to filter out which urbitgraph links should be redirected.
+E.g. the path `/astrolabe` will match `'web+urbitgraph://astrolabe'`.
+It would also match `'web+urbitgraph://astrolabe/ship/~zod'`, which is helpful.
+It would also match `'web+urbitgraph://astrolabe-link/blah-blah'` which may not be helpful.
+
+The `ugg` (a cord/`@t`) is used to construct the redirect URL.
+For Astrolabe, the `ugg` is `'/apps/astrolabe/#'`.
+The redirect URL is the urbitgraph link with protocol and `path` replaced by the `ugg`.
+So with the input of `'web+urbitgraph://astrolabe/ship/~zod'`, Monkey will cut off
+the first part to make `/ship/~zod`. This will be combined with the `ugg` to make
+`'/apps/astrolabe/#/ship/~zod'` which happens to be a working path.
+Monkey will redirect the request to that URL.
+
+If you're redirecting to an Urbit app, you probably don't need to include a protocol
+(like `http://`). By beginning your `ugg` with a `'/'`, the link will automatically
+reuse the current protocol and host.
+
+### The full process
+
+- Astrolabe pokes Monkey with `%bind-ug` and `[path=/astrolabe ugg='/apps/astrolabe/#']`
+- User visits `web+urbitgraph://astrolabe/ship/~zod` in their browser
+- The browser has previously registered some host, like `localhost:8080`, to handle such links
+- It automatically routes the request to
+  `http://localhost:8080/apps/grid/perma?ext=web+urbitgraph://astrolabe/ship/~zod`
+- Monkey is spying on `/apps/grid/perma`, so Eyre passes the request to it first
+- Monkey checks to see whether anyone has claimed links to `/astrolabe/ship/~zod`
+  - If not, it will pass the request on to the `%docket` agent as usual
+- Monkey sees our binding on `/astrolabe`, so it works to redirect the request
+- Monkey strips out the binding to make `'/ship/~zod'`
+- Monkey glues that to the end of the `ugg` to make `/apps/astrolabe/#/ship/~zod`
+  and redirects the request to there
+- The browser will send the GET request to the new URL: `http://localhost:8080/apps/astrolabe/#/ship/~zod`
+- The `%docket` agent kindly serves the Astrolabe app, and the app interprets the path details to display the Ship View page for `~zod`.
+
+### Caveats
+
+You cannot bind to anything that would conflict with existing urbitgraph paths:
+
+- /groups/...
+- /~sampel-palnet/app-desk
+
+To be more specific
+
+## %unbind-ug
+
+If you change your mind and no longer want to handle urbitgraph links to a certain path,
+poke Monkey with the `%unbind-ug` mark.
+
+Gall example:
+```
+:: example poke card, as for Astrolabe
+=/  card  [%pass /any/wire %agent [our.bowl %monkey] %poke [%unbind-ug !>([/astrolabe)]]~
+```
+
+Dojo example:
+`:monkey &unbind-ug /astrolabe`
+
+If the `path` doesn't exactly match a previously bound `path`, nothing will happen.
+Once a `path` is successfully unbound, any urbitgraph links it might have matched
+will be passed to `%docket`, unless handled by a different Monkey client.
