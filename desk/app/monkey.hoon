@@ -10,7 +10,7 @@
     pants=(mip watch latch patch)
     chaps=(map latch watch)
     uggs=(map path ugg)
-    pins=(map @t inbound-request:eyre)
+    pins=(map @t request:http)
   ==
 ::
 +$  card  card:agent:gall
@@ -41,7 +41,7 @@
   |=  old-state=vase
   ^-  (quip card _this)
   ::
-  =/  old  *state-0
+  :: =/  old  *state-0
   :: =.  state  old
   :: =^  cards  state
   ::     (bind-path:hc /apps/grid/perma %redirect-ug)
@@ -108,6 +108,7 @@
       %patch
     =+  !<(=kit vase)
     =,  kit
+    =*  watch  watch.patch
     =^  cards  state
       (bind-path:hc watch %patch)
     =/  old-watch  (~(gut by chaps) latch watch)
@@ -177,7 +178,7 @@
     |^
       ?-  job.u.shirt
           %patch
-        =.  pins  (~(put by pins) eyre-id req)
+        =.  pins  (~(put by pins) eyre-id request.req)
         :_  this
         (relay-cards %patch)
           ::
@@ -343,7 +344,10 @@
     ~
   ~&  "found sliv"
   ?~  cuff.u.coat
-    ~&  "no cuff!"
+    ~&  "no cuff! unbinding"
+    [disconnect-card]~
+  ?:  =(%monkey  app.u.coat)
+    ~&  "monkey cuff found, unbind don't rebind"
     [disconnect-card]~
   ~&  "cuff found, rebind to cuff"
   [%pass /eyre-test %arvo %e %connect u.cuff.u.coat app.u.coat]~
@@ -392,54 +396,21 @@
   `state
 ::
 ++  maybe-patch-data
-  |=  [req=inbound-request:eyre data=octs]
+  |=  [req=request:http data=octs]
   ^-  octs
-  =/  req-line  (parse-request-line url.request.req)
+  =/  req-line  (parse-request-line url.req)
   =*  path  site.req-line
   =/  patches  (get-patches-for-watch path)
   %+  roll  patches
   |=  [=patch =_data]
-  (maybe-apply-patch patch data)
+  (maybe-apply-patch patch data req)
 ::
 ++  get-patches-for-watch
   |=  swatch=watch
   ^-  (list patch)
-  =/  trous  (get-wrists-for-watch swatch pants)
-  %+  roll  trous
+  %+  roll  (get-wrists-for-watch swatch pants)
   |=  [[* leg=(map * patch)] patches=(list patch)]
   (weld patches ~(val by leg))
-::
-++  get-wrist-for-watch
-  |*  [swatch=watch wrists-map=(map watch *)]
-  =/  wrists  (get-wrists-for-watch swatch wrists-map)
-  ?~  wrists  ~
-  =/  wrist  _+.i.wrists
-  =/  item  $:(rolo=watch ruka=wrist)
-  =/  wrists  `(list item)`wrists
-  ^-  (unit wrist)
-  %-  bind
-  :_  |=(=item ruka.item)
-  %+  roll  wrists
-  |=  [[rolo=watch ruka=wrist] utem=(unit item)]
-  ^-  (unit item)
-  ?~  utem  `[rolo ruka]
-  ?:  (gth (lent rolo) (lent rolo.u.utem))
-    `[rolo ruka]
-  utem
-::
-++  get-wrists-for-watch
-  |*  [swatch=watch wrists-map=(map watch *)]
-  =/  wrists  ~(tap by wrists-map)
-  ?~  wrists  ~
-  =/  wrist  _q.i.wrists
-  =/  wrists  `(list _i.wrists)`wrists
-  ^-  (list [watch wrist])
-  %+  murn  wrists
-  |=  [rolo=watch ruka=wrist]
-  ^-  (unit [watch wrist])
-  =/  suffix  (find-suffix rolo swatch)
-  ?~  suffix  ~
-  `[rolo ruka]
 ::
 ++  get-sliv-for-path-from-bindings
 :: Note that nested bindings are presorted by decreasing specificity
@@ -475,61 +446,4 @@
     $(bindings t.bindings)
   :-  path.binding.i.bindings
   $(bindings t.bindings)
-::
-++  find-suffix
-  |=  [prefix=path full=path]
-  ^-  (unit path)
-  ?~  prefix
-    `full
-  ?~  full
-    ~
-  ?.  =(i.prefix i.full)
-    ~
-  $(prefix t.prefix, full t.full)
-::
-++  parse-request-line
-  |=  url=@t
-  ^-  request-line
-  (fall (rush url ;~(plug apat:de-purl:html yque:de-purl:html)) [[~ ~] ~])
-::
-++  ta-to-octs
-  |=  text=@ta
-  ^-  octs
-  [(met 3 text) text]
-::
-++  start-eq
-  |=  [sm=@ta bg=@ta]
-  .=  sm
-  (end [3 (met 3 sm)] bg)
-::
-++  example-patch
-'''
-setInterval(() => {
-  const spans = document.querySelectorAll('div > span[title^="~"][cursor="pointer"]');
-  spans.forEach((span) => {
-    let title = span.getAttribute('title');
-    if (span.innerHTML.indexOf(title) === -1) {
-      span.innerHTML = span.innerHTML + ' ' + title;
-    }
-
-    // console.log(span.innerHTML);
-  });
-}, 100);
-
-let p = document.createElement('p');
-p.innerHTML = "You are great";
-p.style.position = 'absolute';
-p.style.top = '0';
-p.style.backgroundColor = "white";
-document.body.appendChild(p);
-'''
-::
-++  redirect-cards
-  |=  [url=@t paths=(list path)]
-  =/  headers  ['Location' url]~
-  :~
-    [%give %fact paths %http-response-header !>(`response-header:http`[307 headers])]
-    [%give %fact paths %http-response-data !>(*(unit octs))]
-    [%give %kick paths ~]
-  ==
 --

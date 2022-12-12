@@ -12,30 +12,33 @@
 +$  ugg  @t  :: the url to attach urbitgraph data to, e.g. '/apps/monkey?ref='
 +$  regex  tape
 ::
-+$  patch
-  $:  $=  catch  :: which files on the path should be extended
-      $@  ?(%path %all)
-      $%  [%cord cord]
-          [%regex regex]
-      ==
-      $=  hatch  :: where to insert the text in the file
-      $@  ?(%start %end)
-      $%  [%before regex]
-          [%after regex]
-          [%replace regex]
-      ==
-      =thatch  :: the text to be inserted
-  ==
-::
 +$  kit
   $:  =latch  :: the unique identifier for the patch
-      =watch  :: the path to watch and relay
       =patch
+  ==
+::
++$  patch
+  $:  =watch  :: the path to watch and relay
+      =catch  :: which files on the path should be extended
+      =hatch  :: where to insert the text in the file
+      =thatch  :: the text to be inserted
   ==
 ::
 +$  latch  path
 +$  watch  path
 +$  thatch  cord
+::
++$  catch
+  $@  ?(%path %all)
+  $%  [%cord cord]
+      [%regex regex]
+  ==
++$  hatch
+  $@  ?(%start %end)
+  $%  [%before regex]
+      [%after regex]
+      [%replace regex]
+  ==
 ::
 +$  request-line
   $:  [ext=(unit @ta) site=(list @t)]
