@@ -1,0 +1,1 @@
+-test %%%/monkey/=/tests/lib/monkey ~

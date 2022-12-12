@@ -76,6 +76,9 @@
     =^  cards-2  state  setup:hc
     :_  this
     (weld cards-1 cards-2)
+      %ls-bindings
+    ~&  get-bindings:hc
+    `this
       ::
       :: warning: danger
       ::
@@ -346,7 +349,7 @@
   ?~  cuff.u.coat
     ~&  "no cuff! unbinding"
     [disconnect-card]~
-  ?:  =(%monkey  app.u.coat)
+  ?:  =(%monkey app.u.coat)
     ~&  "monkey cuff found, unbind don't rebind"
     [disconnect-card]~
   ~&  "cuff found, rebind to cuff"

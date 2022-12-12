@@ -40,7 +40,7 @@
 ++  thatch-hatch
   |=  [=thatch =hatch text=@t]
   ^-  @t
-  ?@  hatch.patch
+  ?@  hatch
     ?:  ?=(%start hatch)
       (cat 3 thatch text)
     (cat 3 text thatch)
@@ -49,33 +49,33 @@
   =/  thape  (trip thatch)
   =/  urange  (rut:re +.hatch texape)
   ?~  urange  text
-  =/  pint  p.u.urange
+  =/  pint  (pour p.u.urange)
   %-  crip  %-  zing
   %+  join  "\0a"
   ?-  -.hatch
       %before
     =/  [sline=(list tape) mline=(list tape) eline=(list tape)]
-      (smaag (sub p.p.pint 1) p.p.pint lines)
+      (smaag p.p.pint +(p.p.pint) lines)
     ?~  mline  lines
     =/  line  i.mline
     =/  [start=tape end=tape]  (smag q.p.pint line)
     =/  new-line  :(weld start thape end)
-    (snap lines (sub p.p.pint 1) new-line)
+    (snap lines p.p.pint new-line)
       %after
     =/  [sline=(list tape) mline=(list tape) eline=(list tape)]
-      (smaag (sub p.q.pint 1) p.q.pint lines)
+      (smaag p.q.pint +(p.q.pint) lines)
     ?~  mline  lines
     =/  line  i.mline
     =/  [start=tape end=tape]  (smag q.q.pint line)
     =/  new-line  :(weld start thape end)
-    (snap lines (sub p.q.pint 1) new-line)
+    (snap lines p.q.pint new-line)
       %replace
     =/  [sline=(list tape) mline=(list tape) eline=(list tape)]
-      (smaag (sub p.q.pint 1) p.p.pint lines)
+      (smaag p.p.pint +(p.q.pint) lines)
     ?~  mline  lines
     =/  start-line  i.mline
     =/  end-line  (rear mline)
-    =/  start=tape  (scag p.p.pint start-line)
+    =/  start=tape  (scag q.p.pint start-line)
     =/  end=tape  (slag q.q.pint end-line)
     =/  new-line=tape  :(weld start thape end)
     :(weld sline [new-line]~ eline)
@@ -162,6 +162,15 @@
   ?:  =(0 a)  b^c
   ?~  c  b^~
   $(b (snoc b i.c), c t.c, a (dec a))
+::
+++  pour
+  |=  p=pint
+  ^-  pint
+  :- 
+    :-  (sub p.p.p 1)
+    (sub q.p.p 1)
+  :-  (sub p.q.p 1)
+  (sub q.q.p 1)
 ::
 ++  example-patch
 '''
