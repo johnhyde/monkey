@@ -1,0 +1,114 @@
+;>
+# How to Patch Other Apps
+
+Monkey binds to Eyre in a sneaky way so it can intercept
+most requests and insert your code when appropriate.
+
+For now, this is done through pokes:
+
+## Pokes
+
+### `%patch`
+
+Cage structure: `[%patch !>([=kit])]`
+Poke Monkey with the `%patch` mark to intercept requests on a path
+and potentially insert your own text into the responses.
+
+This poke is used for creating new patches and editing existing patches.
+If you create two patches with the same ID, the first one will be removed.
+
+The `kit` you pass in to `%patch` should look like:
+```
++$  kit
+  $:  latch=path  :: the unique identifier for the patch
+      watch=path  :: the path to watch and relay
+      =catch  :: match against response path to select responses to patch
+      =hatch  :: where to insert the thatch in the response
+      thatch=cord  :: the text to be inserted
+  ==
+:: see below for catch, hatch, and regex
++$  catch
+  $@  $?  %path  :: requires exact match between response url and watch
+          %all  :: this matches any path starting with the watch
+      ==
+  $%  [%cord cord]  :: cord exactly matches response path
+      [%regex regex]  :: regex tape
+  ==
++$  hatch
+  $@  $?  %start  :: prepends thatch at the beginning
+          %end  :: appends thatch at the end
+      ==
+  $%  [%before regex]  :: insert thatch before the first match
+      [%after regex]  :: insert thatch after the first match
+      [%replace regex]  :: replace the first match with the thatch
+  ==
++$  regex  tape
+```
+
+Gall example:
+
+```
+:: example poke card for patching %astrolabe
+=/  catch  [%cord '/apps/astrolabe']
+=/  hatch  [%before "<script"]
+=/  thatch  '<script>alert("you\'ve been hacked")</script>'
+=/  patch  [/apps/astrolabe catch hatch thatch]
+=/  patch-vase  !>([/astrolabe-patch patch])
+=/  card  [%pass /any/wire %agent [our.bowl %monkey] %poke [%patch patch-vase]]
+```
+
+Dojo example:
+
+`:monkey &patch patch`
+
+The `latch` will be stored as the unique id for this patch.
+You'll need it to remove or update the patch.
+
+The `watch` path will match any requests that start with that path.
+
+The `catch` is used to test each request url (starting after the host),
+and determine whether the response should be patched.
+
+The `hatch` is used to determine where the `thatch` text should be inserted.
+
+Note:
+
+- Responses that cannot be interpreted as a `cord`/`@t` will not be patched.
+  So, don't try to patch an image or something.
+- Other people might patch the same file(s) as you, so be considerate.
+
+### `%unpatch`
+
+If you want to unregister a patch, poke Monkey with the `%unpatch` mark and the `latch` (path ID).
+
+Gall example:
+```
+:: example poke card, as for Astrolabe
+=/  card  [%pass /any/wire %agent [our.bowl %monkey] %poke [%unpatch !>(/astrolabe-patch)]]~
+```
+
+Dojo example:
+`:monkey &unpatch /astrolabe-patch`
+
+If the `latch` path doesn't exactly match a previously bound `latch`, nothing will happen.
+
+## Scries
+
+### `/patches`
+
+Returns a map of all `latch`es and their associated `patch`es.
+
+### `/patches/[latch]`
+
+Returns the `patch` for the specified `latch`.
+
+A `patch` is a `kit` without the `latch`.
+
+```
++$  patch
+  $:  watch=path  :: the path to watch and relay
+      =catch  :: match against response path to select responses to patch
+      =hatch  :: where to insert the thatch in the response
+      thatch=cord  :: the text to be inserted
+  ==
+```

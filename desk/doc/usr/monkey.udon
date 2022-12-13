@@ -1,26 +1,12 @@
 ;>
 # Monkey
 
-Monkey is a handy friend who will help apply patches (extensions/plugins) to your apps.
+Monkey is an app and agent that binds to eyre and intercepts/relays requests to allow you to:
 
+- inject your code into http responses from other apps
+  (poor man's chrome extension, but for Urbit)
+- define and handle custom `web+urbitgraph://` links,
+  so you can actually redirect to your app
+  and then render something relevant
 
-## Info
-
-- Developer: ~midlev-mindyr
-- License: MIT
-- App link: [~dister-midlev-mindyr/monkey](web+urbitgraph://~dister-midlev-mindyr/monkey)
-- Discussion Group: [~poster-hoster-midlev-mindyr/monkey](web+urbitgraph://group/~poster-hoster-midlev-mindyr/monkey)
-- [%quorum](web+urbitgraph://~dister-dister-sidnym-ladrut/quorum) board: ~poster-hoster-midlev-mindyr/monkey
-- Grant/Proposal: [https://urbit.org/grants/monkey](https://urbit.org/grants/monkey)
-- Source repo: [https://github.com/johnhyde/monkey](https://github.com/johnhyde/monkey)
-- Bug reports: [https://github.com/johnhyde/monkey/issues](https://github.com/johnhyde/monkey/issues)
-
-## Feedback
-
-If you run into issues with the app, or want to voice comments or concerns,
-please post in the group `~poster-hoster-midlev-mindyr/monkey`, send a DM to `~midlev-mindyr`,
-or [create an Issue on GitHub](https://github.com/johnhyde/monkey/issues).
-
-If you see something you want to improve, please fork the [GitHub repository](https://github.com/johnhyde/monkey) and make a pull request.
-
-Thanks for using Monkey. I hope it serves you well.
+Monkey is used in the background by other apps. For now, there's nothing to do with Monkey as a user, but perhaps one day it will have an app store and management UI for extensions.

@@ -17,6 +17,8 @@
 +$  ugg  @t  :: the url to attach urbitgraph data to, e.g. '/apps/monkey?ref='
 +$  regex  tape
 ::
++$  patches  (map latch patch)
+::
 +$  kit
   $:  =latch  :: the unique identifier for the patch
       =patch
@@ -24,8 +26,8 @@
 ::
 +$  patch
   $:  =watch  :: the path to watch and relay
-      =catch  :: which files on the path should be extended
-      =hatch  :: where to insert the text in the file
+      =catch  :: define which responses on the path should be extended
+      =hatch  :: where to insert the thatch in the response
       =thatch  :: the text to be inserted
   ==
 ::
@@ -34,15 +36,19 @@
 +$  thatch  cord
 ::
 +$  catch
-  $@  ?(%path %all)
-  $%  [%cord cord]
-      [%regex regex]
+  $@  $?  %path  :: requires exact match between response url and watch
+          %all  :: this matches any path starting with the watch
+      ==
+  $%  [%cord cord]  :: cord exactly matches response path
+      [%regex regex]  :: regex tape
   ==
 +$  hatch
-  $@  ?(%start %end)
-  $%  [%before regex]
-      [%after regex]
-      [%replace regex]
+  $@  $?  %start  :: prepends thatch at the beginning
+          %end  :: appends thatch at the end
+      ==
+  $%  [%before regex]  :: insert thatch before the first match
+      [%after regex]  :: insert thatch after the first match
+      [%replace regex]  :: replace the first match with the thatch
   ==
 ::
 +$  card  card:agent:gall

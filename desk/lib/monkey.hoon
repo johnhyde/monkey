@@ -20,7 +20,7 @@
   ?.  ?=(%app -.action.binding)
     [%.n ~]
   =/  app  +.action.binding
-  ?:  =(%monkey (some `app))
+  ?:  =(%monkey app)
     [%.y ~]
   [%.n `app]
 ::
@@ -107,6 +107,10 @@
 ++  connect-card
   |=  =path
   [%pass /eyre-test %arvo %e %connect [~ path] %monkey]
+::
+++  connect-card-app
+  |=  [=path app=term]
+  [%pass /eyre-test %arvo %e %connect [~ path] app]
 ::
 ++  disconnect-card
   |=  =path
@@ -220,6 +224,13 @@
   =/  suffix  (find-suffix rolo swatch)
   ?~  suffix  ~
   `[rolo ruka]
+::
+++  sort-wrists
+  |*  wrists=(list [watch *])
+  ^-  _wrists
+  %+  sort  wrists
+  |=  [[w1=watch *] [w2=watch *]]
+  (gth (lent w1) (lent w2))
 ::
 ++  find-suffix
   |=  [prefix=path full=path]

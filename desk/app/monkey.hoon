@@ -1,5 +1,5 @@
 /-  *monkey
-/+  *monkey, *mip, default-agent, dbug, agentio
+/+  *monkey, *mip, re, default-agent, dbug, agentio
 |%
 +$  versioned-state
   $%  state-0
@@ -7,7 +7,7 @@
 +$  state-0
   $:  %0
     :: =shirts
-    shirts=(map watch shirt-old)
+    shirts=(map watch shirt)
     pants=(mip watch latch patch)
     chaps=(map latch watch)
     uggs=(map path ugg)
@@ -29,7 +29,7 @@
 ++  on-init
   ^-  (quip card _this)
   =^  cards  state
-      (bind-path:hc /apps/grid/perma %redirect-ug)
+      (bind-path:hc /apps/grid/perma)
   :_  this
   cards
   :: :~
@@ -45,19 +45,17 @@
   :: =/  old  *state-0
   :: =.  state  old
   :: =^  cards  state
-  ::     (bind-path:hc /apps/grid/perma %redirect-ug)
+  ::     (bind-path:hc /apps/grid/perma)
   :: cards^this
   =/  old  !<(versioned-state old-state)
   =.  state  old
   `this
   ::
-  :: :~
-  ::   :: [%pass /eyre-test %arvo %e %connect [~ /apps/astrolabe] %monkey]
-  ::   :: [%pass /eyre-test %arvo %e %connect [~ /pals] %pals]
-  :: ==
 ++  on-poke
-  :: on-poke:def
   |=  [=mark =vase]
+  ^-  (quip card _this)
+  =^  sync-cards  shirts  get-shirts:hc
+  =-  [(weld sync-cards -<) ->]
   ^-  (quip card _this)
   ?>  =(our src):bowl
   ?+    mark  (on-poke:def mark vase)
@@ -77,8 +75,13 @@
     =^  cards-2  state  setup:hc
     :_  this
     (weld cards-1 cards-2)
+      ::
       %ls-bindings
     ~&  get-bindings:hc
+    `this
+      ::
+      %ls-shirts
+    ~&  shirts
     `this
       ::
       :: warning: danger
@@ -86,25 +89,13 @@
       %bind
     =+  !<(=path vase)
     =^  cards  state
-      (bind-path:hc path *job)
-    cards^this
-      ::
-      %bind-to-job
-    =+  !<([=path =job] vase)
-    =^  cards  state
-      (bind-path:hc path job)
+      (bind-path:hc path)
     cards^this
       ::
       %unbind
     =+  !<(=path vase)
     =^  cards  state
-      (unbind-path:hc path force=%.n)
-    cards^this
-      ::
-      %unbind-force
-    =+  !<(=path vase)
-    =^  cards  state
-      (unbind-path:hc path force=%.y)
+      (unbind-path:hc path)
     cards^this
       ::
       :: patching
@@ -113,8 +104,21 @@
     =+  !<(=kit vase)
     =,  kit
     =*  watch  watch.patch
+    =/  catch-valid
+      ?@  catch.patch  %.y
+      ?:  ?=([%regex *] catch.patch)
+        (valid:re `tape`+.catch.patch)
+      %.y
+    =/  hatch-valid
+      ?^  hatch.patch
+        (valid:re +.hatch.patch)
+      %.y
+    ?.  catch-valid
+      ~|(%catch-regex-invalid !!)
+    ?.  hatch-valid
+      ~|(%hatch-regex-invalid !!)
     =^  cards  state
-      (bind-path:hc watch %patch)
+      (bind-path:hc watch)
     =/  old-watch  (~(gut by chaps) latch watch)
     =^  chap-cards  state
       ?:  =(watch old-watch)
@@ -164,40 +168,35 @@
     =+  !<([eyre-id=@ta req=inbound-request:eyre] vase)
     ?~  &(authenticated.req secure.req)  !!
     =/  req-line  (parse-request-line url.request.req)
-    =*  path  site.req-line
+    =*  watch  site.req-line
     ~&  url.request.req
-    ~&  path
-    ~&  args.req-line
-    =/  shirt  (get-wrist-for-watch path shirts)
-    ~&  shirt
-    =/  paths  ~[/http-response/[eyre-id]]
-    ?~  shirt
-      ~&  "attempting to send 500"
+    =/  app  (get-app-for-watch:hc watch)
+    |^
+      =/  paths  ~[/http-response/[eyre-id]]
+      ?~  app
+        :_  this
+        (four-oh-four paths)
+      ?~  (find-suffix watch /apps/grid/perma)
+        =.  pins  (~(put by pins) eyre-id request.req)
+        :_  this
+        (relay-cards %patch u.app)
+      =/  url  (don-uggs:hc req-line)
       :_  this
+      ?~  url  (relay-cards %relay u.app)
+      ~&  "attempting to redirect"
+      (redirect-cards:hc u.url paths)
+    ++  relay-cards
+      |=  [=term app=term]
+      :~
+        [%pass /[term]/[eyre-id] %agent [our.bowl app] %watch /http-response/[eyre-id]]
+        [%pass /[term]/[eyre-id] %agent [our.bowl app] %poke [mark vase]]
+      ==
+    ++  four-oh-four
+      |=  paths=(list path)
       :~
         [%give %fact paths %http-response-header !>(`response-header:http`[500 ~])]
         [%give %fact paths %http-response-data !>(*(unit octs))]
         [%give %kick paths ~]
-      ==
-    |^
-      ?-  job.u.shirt
-          %patch
-        =.  pins  (~(put by pins) eyre-id request.req)
-        :_  this
-        (relay-cards %patch)
-          ::
-          %redirect-ug
-        =/  url  (don-uggs:hc req-line)
-        :_  this
-        ?~  url  (relay-cards %relay)
-        ~&  "attempting to redirect"
-        (redirect-cards:hc u.url paths)
-      ==
-    ++  relay-cards
-      |=  =term
-      :~
-        [%pass /[term]/[eyre-id] %agent [our.bowl app.sliv.u.shirt] %watch /http-response/[eyre-id]]
-        [%pass /[term]/[eyre-id] %agent [our.bowl app.sliv.u.shirt] %poke [mark vase]]
       ==
     --
   ==
@@ -221,9 +220,13 @@
 ++  on-peek
   |=  =path
   ^-  (unit (unit cage))
-  ?+    path  (on-peek:def path)
-      [%x %null ~]
-    ``noun+!>(~)
+  ?+  path  (on-peek:def path)
+      [%x %patches ~]
+    ``patches+!>(get-patches:hc)
+      [%x %patches ^]
+    =/  patch  (get-patch:hc t.t.path)
+    ?~  patch  `~
+    ``patch+!>(u.patch)
   ==
 ++  on-agent
   |=  [=wire =sign:agent:gall]
@@ -280,6 +283,16 @@
 ++  get-eyre-shirts
   ^-  ^shirts
   (bindings-to-shirts get-bindings)
+++  get-shirts
+  ^-  (quip card ^shirts)
+  (merge-shirts get-eyre-shirts shirts)
+++  our-shirts
+  ^-  (list [watch shirt])
+  %+  murn  ~(tap by shirts)
+  |=  [w=watch s=shirt]
+  ^-  (unit [watch shirt])
+  ?.  ours.s  ~
+  `[w s]
 ++  res-paths
   |=  id=@ta
   ~[/http-response/[id]]
@@ -297,68 +310,47 @@
 ::   `(crip (en-xml:html p.mme))::  +find-suffix: returns [~ /tail] if :full is (weld :prefix /tail)
 ::
 ++  reset
-  =/  paths  (get-paths-for-app-from-bindings %monkey)
   :_  *state-0
-  %+  roll  paths
-    |=  [=path cards=(list card)]
-    %+  weld  cards
-    -:(unbind-path path %.y)
+  %+  roll  our-shirts
+    |=  [[=watch =shirt] cards=(list card)]
+    :-  (disconnect-card watch)
+    cards
 ::
-++  setup  (bind-path /apps/grid/perma %redirect-ug)
+++  setup  (bind-path /apps/grid/perma)
+
+++  put-shirt
+  |=  [=watch =shirt]
+  ^-  _state
+  state(shirts (~(put by shirts) watch shirt))
 ::
 ++  bind-path
-  |=  [=path =job]
+  |=  =watch
   ^-  (quip card _state)
-  =/  sliv  (get-sliv-for-path-from-bindings path)
-  ~&  "try to bind"
-  ?~  sliv  `state
-  =/  new-shirts  (~(put by shirts) path [job u.sliv])
-  =/  cards  [%pass /eyre-test %arvo %e %connect [~ path] %monkey]~
-  :: =/  cards  [%pass /eyre-test %arvo %e %connect [`'http://warkgnall.com' path] %monkey]~
-  ?.  =(%monkey app.u.sliv)
-    ~&  "found sliv"
-    :-  cards
-    state(shirts new-shirts)
-  ?.  =(cuff.u.sliv ~)
-    ~&  "found exact %monkey sliv"
-    :: %monkey was already bound to this exact path
-    :: bind anyway, just in case
-    cards^state(shirts new-shirts)
-  ~&  "found %monkey sub-sliv"
-  :-  ~  ^-  _state
-  =/  shirt  (get-wrist-for-watch path shirts)
-  ?~  shirt  state
-  ?:  =(job.u.shirt job)
-    state
-  ~|(%parent-bind-job-mismatch !!)
+  =/  ushirt  (~(get by shirts) watch)
+  =/  connect-cards  [(connect-card watch)]~
+  ?~  ushirt
+    :-  connect-cards
+    (put-shirt watch [%.y ~])
+  ?:  ours.u.ushirt
+    :: nothing to do
+    `state
+  ?~  app.u.ushirt
+    :: forbidden
+    `state  
+  :-  connect-cards
+  (put-shirt watch [%.y app.u.ushirt])
 ::
 ++  unbind-path
-  |=  [=path force=?]
+  |=  [=watch]
   ^-  (quip card _state)
-  =/  coat  (~(get by shirts) path)
-  =/  sliv  (bind coat |=(shirt=shirt-old sliv.shirt))
-  :-  (unbind-sliv path sliv force)
-  %=  state  shirts
-    (~(del by shirts) path)
-  ==
-::
-++  unbind-sliv
-  |=  [=path coat=(unit sliv) force=?]
-  ^-  (list card)
-  =/  disconnect-card  [%pass /eyre-test %arvo %e %disconnect [~ path]]
-  ?~  coat
-    ?:  force  [disconnect-card]~
-    ~&  "no sliv found, not unbinding"
-    ~
-  ~&  "found sliv"
-  ?~  cuff.u.coat
-    ~&  "no cuff! unbinding"
-    [disconnect-card]~
-  ?:  =(%monkey app.u.coat)
-    ~&  "monkey cuff found, unbind don't rebind"
-    [disconnect-card]~
-  ~&  "cuff found, rebind to cuff"
-  [%pass /eyre-test %arvo %e %connect u.cuff.u.coat app.u.coat]~
+  =/  ushirt  (~(get by shirts) watch)
+  ?~  ushirt  `state
+  ?.  ours.u.ushirt
+    `state
+  :_  state(shirts (~(del by shirts) watch))
+  ?~  app.u.ushirt
+    [(disconnect-card watch)]~
+  [(connect-card-app watch u.app.u.ushirt)]~
 ::
 ++  don-uggs
   |=  req=request-line
@@ -403,9 +395,31 @@
   :: TODO: clean up unused shirts/bindings
   `state
 ::
+++  get-patches
+  ^-  (map latch patch)
+  %-  malt
+  ^-  (list [latch patch])
+  %+  murn  ~(tap by chaps)
+  |=  [=latch =watch]
+  ^-  (unit [^latch patch])
+  %+  bind
+    (~(get bi pants) watch latch)
+  |=  =patch
+  [latch patch]
+::
+++  get-patch
+  |=  [=latch]
+  ^-  (unit patch)
+  =/  chap  (~(get by chaps) latch)
+  ?~  chap  ~
+  =/  pant  (~(get by pants) u.chap)
+  ?~  pant  ~
+  (~(get by u.pant) latch)
+::
 ++  maybe-patch-data
   |=  [req=request:http data=octs]
   ^-  octs
+  ?.  ((sane %t) q.data)  data
   =/  req-line  (parse-request-line url.req)
   =*  path  site.req-line
   =/  patches  (get-patches-for-watch path)
@@ -420,6 +434,17 @@
   |=  [[* leg=(map * patch)] patches=(list patch)]
   (weld patches ~(val by leg))
 ::
+++  get-app-for-watch
+  |=  =watch
+  ^-  (unit term)
+  =/  m-shirts  %-  sort-wrists
+    (get-wrists-for-watch watch shirts)
+  |-  ^-  (unit term)
+  ?~  m-shirts  `%docket
+  =/  shirt  +.i.m-shirts
+  ?^  app.shirt  app.shirt
+  ?.  ours.shirt  ~  :: non-app binding matched: bail
+  $(m-shirts t.m-shirts)
 ++  get-sliv-for-path-from-bindings
 :: Note that nested bindings are presorted by decreasing specificity
   |=  =path
@@ -440,7 +465,7 @@
     (some binding.i.bindings)
   ~
 ::
-++  get-paths-for-app-from-bindings
+++  yget-paths-for-app-from-bindings
   |=  app=term
   ^-  (list path)
   =/  bindings  get-bindings

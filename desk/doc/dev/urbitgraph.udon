@@ -72,7 +72,7 @@ poke Monkey with the `%unbind-ug` mark.
 Gall example:
 ```
 :: example poke card, as for Astrolabe
-=/  card  [%pass /any/wire %agent [our.bowl %monkey] %poke [%unbind-ug !>([/astrolabe)]]~
+=/  card  [%pass /any/wire %agent [our.bowl %monkey] %poke [%unbind-ug !>(/astrolabe)]]~
 ```
 
 Dojo example:
