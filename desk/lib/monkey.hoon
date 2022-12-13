@@ -4,6 +4,114 @@
 =<  [sur .]
 =,  sur
 |%
++$  card  card:agent:gall
+++  bindings-to-shirts
+  |=  bindings=(list binding)
+  ^-  shirts
+  ?~  bindings  ~
+  %-  malt
+  %+  murn  bindings
+  |=  =binding
+  ^-  (unit [watch shirt])
+  ?^  site.binding.binding
+    ~
+  :-  ~
+  :-  path.binding.binding
+  ?.  ?=(%app -.action.binding)
+    [%.n ~]
+  =/  app  +.action.binding
+  ?:  =(%monkey (some `app))
+    [%.y ~]
+  [%.n `app]
+::
+++  merge-shirts
+  |=  [e-shirts=shirts s-shirts=shirts]
+  ^-  (quip card shirts)
+  =-  [-> -<]
+  %^  ruts  e-shirts  s-shirts
+  |=  [k=watch ev=(unit shirt) sv=(unit shirt) cards=(list card)]
+  ^-  [(unit shirt) _cards]
+  =-  [-> (weld -< cards)]
+  ^-  (quip card (unit shirt))
+  ?~  sv
+    ?~  ev  `~
+    ?:  ours.u.ev
+      ~[(disconnect-card k)]~
+    `ev
+  ?~  ev
+    ?.  ours.u.sv
+      `~
+    :: our binding was removed, reconnect w/o app
+    :-  [(connect-card k)]~
+    `[%.y ~]
+  ?:  =(ours.u.ev ours.u.sv)
+    :: we agree on owner
+    ?.  ours.u.ev
+      :: not ours: accept eyre
+      `ev
+    :: ours: keep state
+    `sv
+  :: we disagree on owner
+  ?.  ours.u.sv
+    :: we can't handle this: disconnect and remove
+    ~[(disconnect-card k)]~
+  ?~  app.u.ev
+    :: path has been bound by not-an-app
+    `ev
+  :: an app overwrote our binding
+  :-  [(connect-card k)]~
+  `[%.y app.u.ev]
+::
+++  ruts
+  |*  [m1=(map) m2=(map) g=gate]
+  ((rutsc g) m1 m2)
+::
+++  rutsc
+  |*  g=_|=([k=* v1=(unit) v2=(unit) a=*] [*(unit) a:+<])
+  =/  s  +<.g
+  =+
+    ~|  %invalid-gate-type
+    ?@  s  !!  ?@  +.s  !!  ?@  +>.s  !!
+    [k=_,.&1.s v1=_&2.s v2=_&3.s a=_,.+>+.s]
+  =/  uv  _-:(g)
+  =>  .(g `$-([k v1 v2 a] [uv a])`g)
+  |*  [m1=(map k *) m2=(map k *)]
+  =/  keys1=(set k)  ~(key by m1)
+  =/  keys2=(set k)  ~(key by m2)
+  =/  keys=(list k)  ~(tap in (~(gas in keys1) ~(tap in keys2)))
+  =/  unit-list
+    ^-  [(list [k uv]) a]
+    %^  spin  keys  *a
+    |=  [=k =a]
+    =/  gm1  ~(get by m1)
+    =/  =v1  ?~  m1  ~  (gm1 k)
+    =/  gm2  ~(get by m2)
+    =/  =v2  ?~  m2  ~  (gm2 k)
+    =-  [[k -<] ->]
+    (g k v1 v2 a)
+  =/  l  -.unit-list
+  =/  v  $_
+    ?>
+      ?=(^ l)
+    ?>  ?=(^ +.i.l)
+    +>.i.l
+  ^-  [(map k v) a]
+  :_  +.unit-list
+  %-  malt
+  %+  murn  l
+  |=  [=k =uv]
+  ^-  (unit [^k v])
+  ?~  uv  ~
+  `[k +.uv]
+::
+++  connect-card
+  |=  =path
+  [%pass /eyre-test %arvo %e %connect [~ path] %monkey]
+::
+++  disconnect-card
+  |=  =path
+  [%pass /eyre-test %arvo %e %disconnect [~ path]]
+::
 ++  maybe-apply-patch
   |=  [=patch data=octs req=request:http]
   ^-  octs

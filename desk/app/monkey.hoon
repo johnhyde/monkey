@@ -6,7 +6,8 @@
   ==
 +$  state-0
   $:  %0
-    shirts=(map watch shirt)
+    :: =shirts
+    shirts=(map watch shirt-old)
     pants=(mip watch latch patch)
     chaps=(map latch watch)
     uggs=(map path ugg)
@@ -276,6 +277,9 @@
 ++  scrio  ~(scry agentio bowl)
 ++  az-events-card  [%pass /azimuth-events %agent [our.bowl %azimuth] %watch /event]
 ++  get-bindings  .^((list binding) %e (scrio %bindings ~))
+++  get-eyre-shirts
+  ^-  ^shirts
+  (bindings-to-shirts get-bindings)
 ++  res-paths
   |=  id=@ta
   ~[/http-response/[id]]
@@ -310,6 +314,7 @@
   ?~  sliv  `state
   =/  new-shirts  (~(put by shirts) path [job u.sliv])
   =/  cards  [%pass /eyre-test %arvo %e %connect [~ path] %monkey]~
+  :: =/  cards  [%pass /eyre-test %arvo %e %connect [`'http://warkgnall.com' path] %monkey]~
   ?.  =(%monkey app.u.sliv)
     ~&  "found sliv"
     :-  cards
@@ -331,7 +336,7 @@
   |=  [=path force=?]
   ^-  (quip card _state)
   =/  coat  (~(get by shirts) path)
-  =/  sliv  (bind coat |=(=shirt sliv.shirt))
+  =/  sliv  (bind coat |=(shirt=shirt-old sliv.shirt))
   :-  (unbind-sliv path sliv force)
   %=  state  shirts
     (~(del by shirts) path)

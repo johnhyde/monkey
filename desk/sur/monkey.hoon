@@ -1,6 +1,11 @@
 /+  naive, *mip, re
 |%
++$  shirts  (map watch shirt)
 +$  shirt
+  $:  ours=?
+      app=(unit term)  :: ~ means it's not an %app action
+  ==
++$  shirt-old
   $:  =job
       =sliv
   ==
@@ -40,11 +45,33 @@
       [%replace regex]
   ==
 ::
++$  card  card:agent:gall
+::
 +$  request-line
   $:  [ext=(unit @ta) site=(list @t)]
       args=(list [key=@t value=@t])
   ==
 ::
 +$  binding  [=binding:eyre =duct =action:eyre]
+::
+::  ref from lull.hoon
+::  binding:eyre
+:: +$  binding
+::   $:  site=(unit @t)
+::       ::    /~myapp will match /~myapp or /~myapp/longer/path
+::       path=(list @t)
+::   ==
+::
+:: +$  action
+::   $%  [%gen =generator]
+::       ::  dispatch to an application
+::       ::
+::       [%app app=term]
+::       [%authentication ~]
+::       [%logout ~]
+::       [%channel ~]
+::       [%scry ~]
+::       [%four-oh-four ~]
+::   ==
 ::
 --
