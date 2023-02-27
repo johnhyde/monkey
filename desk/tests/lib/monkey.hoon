@@ -1,5 +1,3 @@
-::  tests for number-to-words
-::
 /-  *monkey
 /+  *monkey, *test
 ::
