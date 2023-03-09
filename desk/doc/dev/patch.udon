@@ -20,7 +20,7 @@ If you create two patches with the same ID, the first one will be removed.
 The `kit` you pass in to `%patch` should look like:
 ```
 +$  kit
-  $:  latch=path  :: the unique identifier for the patch
+  $:  latch=path  :: the unique identifier for the patch, e.g. /patchee/patcher/name
       watch=path  :: the path to watch and relay
       =catch  :: match against response path to select responses to patch
       =hatch  :: where to insert the thatch in the response
@@ -53,8 +53,8 @@ Gall example:
 =/  hatch  [%before "<script"]
 =/  thatch  '<script>alert("you\'ve been hacked")</script>'
 =/  patch  [/apps/astrolabe catch hatch thatch]
-=/  patch-vase  !>([/astrolabe-patch patch])
-=/  card  [%pass /any/wire %agent [our.bowl %monkey] %poke [%patch patch-vase]]
+=/  patch-kit-vase  !>([/astrolabe-patch patch])
+=/  card  [%pass /any/wire %agent [our.bowl %monkey] %poke [%patch patch-kit-vase]]
 ```
 
 Dojo example:
@@ -94,17 +94,30 @@ If the `latch` path doesn't exactly match a previously bound `latch`, nothing wi
 
 ## Scries
 
-### `/patches`
+These scries allow you to access patches installed in Monkey. After a patch has been installed, it also will have settings associated with it, like whether it's enabled. We call an installed patch a `pitch`.
 
-Returns a map of all `latch`es and their associated `patch`es.
+### `/pitches`
 
-### `/patches/[latch]`
+Returns a map of all `latch`es and their associated `pitch`es.
 
-Returns the `patch` for the specified `latch`.
+### `/pitches/[latch]`
 
+Returns the `pitch` for the specified `latch`.
+
+A `pitch` is a cell of `paste` (installation details) and a `patch`.
+`paste` is just a loobean for enabling the patch.
 A `patch` is a `kit` without the `latch`.
 
 ```
++$  pitch
+  $:  glue  :: configuration for using the patch
+      =patch
+  ==
+::
++$  glue
+  $:  enabled=?
+  ==
+::
 +$  patch
   $:  watch=path  :: the path to watch and relay
       =catch  :: match against response path to select responses to patch

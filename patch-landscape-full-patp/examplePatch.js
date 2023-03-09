@@ -1,18 +1,18 @@
+'''
 setInterval(() => {
-  const spans = document.querySelectorAll('div > span[title^="~"][cursor="pointer"]');
+  const spans = document.querySelectorAll('section > div > div > div > span > span:first-child');
   spans.forEach((span) => {
-    let title = span.getAttribute('title');
-    if (span.innerHTML.indexOf(title) === -1) {
-      span.innerHTML = span.innerHTML + ' ' + title;
-    }
-
-    // console.log(span.innerHTML);
+    if (span.innerHTML !== '~') return;
+    let c = span.parentElement.parentElement;
+    if (c.children.length > 1) return;
+    let patp = c.innerText;
+    let b = document.createElement('a');
+    b.innerHTML = "View in Astrolabe";
+    b.className = 'button ml-4';
+    b.href = 'web+urbitgraph://astrolabe/ship/' + patp;
+    b.target = '_blank';
+    b.style.backgroundColor = "navy";
+    c.appendChild(b);
   });
 }, 100);
-
-let p = document.createElement('p');
-p.innerHTML = "You are great";
-p.style.position = 'absolute';
-p.style.top = '0';
-p.style.backgroundColor = "white";
-document.body.appendChild(p);
+'''

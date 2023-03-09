@@ -9,4 +9,4 @@ Monkey is an app and agent that binds to eyre and intercepts/relays requests to 
   so you can actually redirect to your app
   and then render something relevant
 
-Monkey is used in the background by other apps. For now, there's nothing to do with Monkey as a user, but perhaps one day it will have an app store and management UI for extensions.
+Monkey is used in the background by other apps. For now, there's nothing to do with Monkey as a user, but hopefully one day it will have an app store and management UI for extensions.

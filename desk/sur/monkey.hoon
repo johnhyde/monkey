@@ -20,8 +20,17 @@
 +$  patches  (map latch patch)
 ::
 +$  kit
-  $:  =latch  :: the unique identifier for the patch
+  $:  =latch  :: the unique identifier for the patch, e.g. /patchee/patcher/name
       =patch
+  ==
+::
++$  pitch
+  $:  paste  :: configuration for using the patch
+      =patch
+  ==
+::
++$  paste
+  $:  enabled=?
   ==
 ::
 +$  patch

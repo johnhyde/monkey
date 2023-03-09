@@ -116,14 +116,19 @@
   |=  =path
   [%pass /eyre-test %arvo %e %disconnect [~ path]]
 ::
-++  maybe-apply-patch
-  |=  [=patch data=octs req=request:http]
+++  apply-pitch
+  |=  [=pitch data=octs req=request:http]
   ^-  octs
-  =/  caught  (catch-req patch req)
+  ?.  enabled.pitch  data
+  =/  caught  (catch-req patch.pitch req)
   ?.  caught
     data
-  :: data
-  (patch-response-data patch data)
+  :: ~&  "size of file to patch"
+  :: ~&  p.data
+  :: ~&  "check sanity"
+  ?.  ((saner %t) q.data)  data
+  :: ~&  "sanity checked"
+  (apply-patch patch.pitch data)
 ::
 ++  catch-req
   |=  [=patch req=request:http]
@@ -141,10 +146,12 @@
     =/  urange  (rut:re +.catch.patch (trip url.req))
     ?~  urange  %.n  %.y
   ==
-++  patch-response-data
+++  apply-patch
   |=  [=patch data=octs]
   ^-  octs
-  =/  text  ((sand %t) q.data)
+  :: ~&  "attempt sander"
+  =/  text  ((sander %t) q.data)
+  :: ~&  "attempted sander"
   ?~  text  data
   %-  ta-to-octs
   (thatch-hatch thatch.patch hatch.patch u.text)
@@ -290,6 +297,56 @@
     (sub q.p.p 1)
   :-  (sub p.q.p 1)
   (sub q.q.p 1)
+::
+++  sander                                              ::  atom sanity
+  |=  a=@ta
+  (flit (saner a))
+::
+++  saner                                               ::  atom sanity
+  |=  a=@ta
+  |=  b=@  ^-  ?
+  ?.  =(%t (end 3 a))
+    ::  XX more and better sanity
+    ::
+    &
+  =+  [inx=0 len=(met 3 b)]
+  ?:  =(%tas a)
+    |-  ^-  ?
+    ?:  =(inx len)  &
+    =+  cur=(cut 3 [inx 1] b)
+    ?&  ?|  &((gte cur 'a') (lte cur 'z'))
+            &(=('-' cur) !=(0 inx) !=(len inx))
+            &(&((gte cur '0') (lte cur '9')) !=(0 inx))
+        ==
+        $(inx +(inx))
+    ==
+  ?:  =(%ta a)
+    |-  ^-  ?
+    ?:  =(inx len)  &
+    =+  cur=(cut 3 [inx 1] b)
+    ?&  ?|  &((gte cur 'a') (lte cur 'z'))
+            &((gte cur '0') (lte cur '9'))
+            |(=('-' cur) =('~' cur) =('_' cur) =('.' cur))
+        ==
+        $(inx +(inx))
+    ==
+  |-  ^-  ?
+  ?:  =(inx len)  &
+  =+  cur=(cut 3 [inx 1] b)
+  ?:  &((lth cur 32) !=(10 cur))  |
+  =+  tef=(teff cur)
+  ::  ==
+  ?&  ?|
+          =(1 tef)
+          =+  i=1
+        |-  ?|
+            =(i tef)
+            ?&  (gte (cut 3 [(add i inx) 1] b) 128)
+                $(i +(i))
+        ==  ==
+      ==
+      $(inx +(inx))
+  ==
 ::
 ++  example-patch
 '''

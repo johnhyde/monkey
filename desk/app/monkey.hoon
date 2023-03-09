@@ -8,7 +8,7 @@
   $:  %0
     :: =shirts
     shirts=(map watch shirt)
-    pants=(mip watch latch patch)
+    pants=(mip watch latch pitch)
     chaps=(map latch watch)
     uggs=(map path ugg)
     pins=(map @t request:http)
@@ -84,6 +84,10 @@
     ~&  shirts
     `this
       ::
+      %ls-pants
+    ~&  pants
+    `this
+      ::
       :: warning: danger
       ::
       %bind
@@ -126,7 +130,7 @@
       (rip-pants:hc old-watch latch)
     =.  chaps  (~(put by chaps) latch watch)
     ^-  (quip card _this)
-    =.  pants  (~(put bi pants) watch latch patch)
+    =.  pants  (~(put bi pants) watch latch [*paste patch])
     :_  this
     (weld cards chap-cards)
       ::
@@ -139,6 +143,19 @@
     =.  chaps  (~(del by chaps) latch)
     ^-  (quip card _this)
     cards^this
+      ::
+    ::   %unpatch
+    :: =+  !<(=latch vase)
+    :: =/  uwatch  (~(get by chaps) latch)
+    :: =^  cards  state
+    ::   ?~  uwatch  `state
+    ::   (rip-pants:hc u.uwatch latch)
+    :: =.  chaps  (~(del by chaps) latch)
+    :: ^-  (quip card _this)
+    :: cards^this
+      ::
+      :: TODO: %enable-patch
+      ::
       ::
       :: urbitgraph handling
       ::
@@ -169,7 +186,7 @@
     ?~  &(authenticated.req secure.req)  !!
     =/  req-line  (parse-request-line url.request.req)
     =*  watch  site.req-line
-    ~&  url.request.req
+    :: ~&  url.request.req
     =/  app  (get-app-for-watch:hc watch)
     |^
       =/  paths  ~[/http-response/[eyre-id]]
@@ -183,7 +200,7 @@
       =/  url  (don-uggs:hc req-line)
       :_  this
       ?~  url  (relay-cards %relay u.app)
-      ~&  "attempting to redirect"
+      :: ~&  "attempting to redirect"
       (redirect-cards:hc u.url paths)
     ++  relay-cards
       |=  [=term app=term]
@@ -208,7 +225,7 @@
   ::
       [%http-response *]
     ?>  =(our src):bowl
-    %-  (slog leaf+"Eyre subscribed to {(spud path)}." ~)
+    :: %-  (slog leaf+"Eyre subscribed to {(spud path)}." ~)
     `this
   ==
 ++  on-leave
@@ -221,12 +238,12 @@
   |=  =path
   ^-  (unit (unit cage))
   ?+  path  (on-peek:def path)
-      [%x %patches ~]
-    ``patches+!>(get-patches:hc)
-      [%x %patches ^]
-    =/  patch  (get-patch:hc t.t.path)
-    ?~  patch  `~
-    ``patch+!>(u.patch)
+      [%x %pitches ~]
+    ``pitches+!>(get-pants:hc)
+      [%x %pitches ^]
+    =/  pitch  (get-pitch:hc t.t.path)
+    ?~  pitch  `~
+    ``pitch+!>(u.pitch)
   ==
 ++  on-agent
   |=  [=wire =sign:agent:gall]
@@ -244,11 +261,12 @@
         %fact
       ?+    p.cage.sign  (on-agent:def wire sign)
           %http-response-header
-        ~&  "header received"
+        :: ~&  "htp res header received"
         :_  this
         [%give %fact res-paths cage.sign]~
           ::
           %http-response-data
+        :: ~&  "htp res body received"
         =/  req  (~(get by pins) eyre-id)
         :_  this
         ?:  |(=(~ req) =(%relay -.wire))
@@ -256,6 +274,8 @@
         ?>  ?=(^ req)
         =/  data  !<((unit octs) q.cage.sign)
         =.  data  ?~  data  ~
+          :: ~&  "size of file to patch"
+          :: ~&  p.u.data
           (some (maybe-patch-data:hc u.req u.data))
         [%give %fact res-paths %http-response-data !>(data)]~
       ==
@@ -268,9 +288,9 @@
     (on-arvo:def [wire sign-arvo])
   ?>  ?=([%eyre %bound *] sign-arvo)
   ?:  accepted.sign-arvo
-    %-  (slog leaf+"{<path.binding.sign-arvo>} bound successfully!" ~)
+    %-  (slog leaf+"Monkey bound to {<path.binding.sign-arvo>} successfully!" ~)
     `this
-  %-  (slog leaf+"Binding {<path.binding.sign-arvo>} failed!" ~)
+  %-  (slog leaf+"Monkey failed to bind to {<path.binding.sign-arvo>}!" ~)
   `this
 ++  on-fail  on-fail:def
 --
@@ -359,30 +379,30 @@
     %-  %~  get  by
       (malt args.req)
     'ext'
-  ~&  "got ext"
-  ~&  ext
+  :: ~&  "got ext"
+  :: ~&  ext
   ?~  ext  ~
   :: split off 'web+urbitgraph:/'
   :: keep end / to check w/ path
   =/  sock=@t  (rsh [3 16] u.ext)
-  ~&  "got sock"
-  ~&  sock
+  :: ~&  "got sock"
+  :: ~&  sock
   ?~  sock  ~
   =/  shoes  ~(tap by uggs)
-  ~&  "got shoes"
-  ~&  shoes
+  :: ~&  "got shoes"
+  :: ~&  shoes
   =/  shoe-box
     |-
     ^-  (unit [sole=@t =ugg])
     ?~  shoes  ~
     =/  sole  (spat p.i.shoes)
-    ~&  "got sole"
-    ~&  sole
+    :: ~&  "got sole"
+    :: ~&  sole
     ?:  (start-eq sole sock)
       `[sole q.i.shoes]
     $(shoes t.shoes)
-  ~&  "got shoe box"
-  ~&  shoe-box
+  :: ~&  "got shoe box"
+  :: ~&  shoe-box
   ?~  shoe-box  ~
   =*  shoe  u.shoe-box
   =/  hem  (rsh [3 (met 3 sole.shoe)] sock)
@@ -395,44 +415,48 @@
   :: TODO: clean up unused shirts/bindings
   `state
 ::
-++  get-patches
-  ^-  (map latch patch)
+++  get-pants
+  ^-  (map latch pitch)
   %-  malt
-  ^-  (list [latch patch])
+  ^-  (list [latch pitch])
   %+  murn  ~(tap by chaps)
   |=  [=latch =watch]
-  ^-  (unit [^latch patch])
+  ^-  (unit [^latch pitch])
   %+  bind
     (~(get bi pants) watch latch)
-  |=  =patch
-  [latch patch]
+  |=  =pitch
+  [latch pitch]
 ::
-++  get-patch
+++  get-pitch
   |=  [=latch]
-  ^-  (unit patch)
+  ^-  (unit pitch)
   =/  chap  (~(get by chaps) latch)
   ?~  chap  ~
-  =/  pant  (~(get by pants) u.chap)
-  ?~  pant  ~
-  (~(get by u.pant) latch)
+  =/  pitch  (~(get by pants) u.chap)
+  ?~  pitch  ~
+  (~(get by u.pitch) latch)
 ::
 ++  maybe-patch-data
   |=  [req=request:http data=octs]
   ^-  octs
-  ?.  ((sane %t) q.data)  data
+  ::  1MB limit on files
+  ::  TODO: analyze available memory to decide?
+  ?:  (gth p.data (bex 20))
+    :: %-  (slog leaf+"Monkey won't patch {<url.req>} because it's larger than 1MB" ~)
+    data
   =/  req-line  (parse-request-line url.req)
   =*  path  site.req-line
-  =/  patches  (get-patches-for-watch path)
-  %+  roll  patches
-  |=  [=patch =_data]
-  (maybe-apply-patch patch data req)
+  =/  pants  (get-pants-for-watch path)
+  %+  roll  pants
+  |=  [=pitch =_data]
+  (apply-pitch pitch data req)
 ::
-++  get-patches-for-watch
+++  get-pants-for-watch
   |=  swatch=watch
-  ^-  (list patch)
+  ^-  (list pitch)
   %+  roll  (get-wrists-for-watch swatch pants)
-  |=  [[* leg=(map * patch)] patches=(list patch)]
-  (weld patches ~(val by leg))
+  |=  [[* leg=(map * pitch)] pants-list=(list pitch)]
+  (weld pants-list ~(val by leg))
 ::
 ++  get-app-for-watch
   |=  =watch
@@ -445,38 +469,38 @@
   ?^  app.shirt  app.shirt
   ?.  ours.shirt  ~  :: non-app binding matched: bail
   $(m-shirts t.m-shirts)
-++  get-sliv-for-path-from-bindings
-:: Note that nested bindings are presorted by decreasing specificity
-  |=  =path
-  ^-  (unit sliv)
-  =/  bindings  get-bindings
-  |-  ^-  (unit sliv)
-  ?~  bindings  ~
-  =/  suffix  (find-suffix path.binding.i.bindings path)
-  ?~  suffix
-    $(bindings t.bindings)
-  =/  action  action.i.bindings
-  ?.  ?=([%app app=term] action)
-    ~
-  :-  ~
-  ^-  sliv
-  :_  +.action
-  ?~  u.suffix
-    (some binding.i.bindings)
-  ~
-::
-++  yget-paths-for-app-from-bindings
-  |=  app=term
-  ^-  (list path)
-  =/  bindings  get-bindings
-  |-  ^-  (list path)
-  ?~  bindings  ~
-  =/  action  action.i.bindings
-  ?.  ?&
-        ?=([%app app=term] action)
-        =(app +.action)
-      ==
-    $(bindings t.bindings)
-  :-  path.binding.i.bindings
-  $(bindings t.bindings)
+:: ++  get-sliv-for-path-from-bindings
+:: :: Note that nested bindings are presorted by decreasing specificity
+::   |=  =path
+::   ^-  (unit sliv)
+::   =/  bindings  get-bindings
+::   |-  ^-  (unit sliv)
+::   ?~  bindings  ~
+::   =/  suffix  (find-suffix path.binding.i.bindings path)
+::   ?~  suffix
+::     $(bindings t.bindings)
+::   =/  action  action.i.bindings
+::   ?.  ?=([%app app=term] action)
+::     ~
+::   :-  ~
+::   ^-  sliv
+::   :_  +.action
+::   ?~  u.suffix
+::     (some binding.i.bindings)
+::   ~
+:: ::
+:: ++  yget-paths-for-app-from-bindings
+::   |=  app=term
+::   ^-  (list path)
+::   =/  bindings  get-bindings
+::   |-  ^-  (list path)
+::   ?~  bindings  ~
+::   =/  action  action.i.bindings
+::   ?.  ?&
+::         ?=([%app app=term] action)
+::         =(app +.action)
+::       ==
+::     $(bindings t.bindings)
+::   :-  path.binding.i.bindings
+::   $(bindings t.bindings)
 --
