@@ -4,7 +4,7 @@
     image+'https://raw.githubusercontent.com/johnhyde/monkey/main/ui/public/icon.png'
     glob-http+['https://s3.us-east-2.amazonaws.com/warkgnall.com/urbit/monkey/globs/glob-0vtcnvo.o6fdj.i5hlt.qq796.ufog9.glob' 0vtcnvo.o6fdj.i5hlt.qq796.ufog9]
     base+'monkey'
-    version+[0 0 1]
+    version+[0 0 2]
     website+'https://github.com/johnhyde/monkey'
     license+'MIT'
 ==

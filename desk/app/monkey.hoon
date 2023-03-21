@@ -88,6 +88,10 @@
     ~&  pants
     `this
       ::
+      %ls-uggs
+    ~&  uggs
+    `this
+      ::
       :: warning: danger
       ::
       %bind
@@ -183,7 +187,7 @@
       ::
       %handle-http-request
     =+  !<([eyre-id=@ta req=inbound-request:eyre] vase)
-    ?~  &(authenticated.req secure.req)  !!
+    ?.  authenticated.req  !!
     =/  req-line  (parse-request-line url.request.req)
     =*  watch  site.req-line
     :: ~&  url.request.req
