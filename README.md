@@ -1,12 +1,16 @@
 # Monkey
-Monkey (%monkey) is a one-stop shop %docket app for exploring Urbit address space. Main features: ID Search, Sigil Search, Sky Chart, and Ship View (for viewing a given ship's details). Monkey integrates with %pals wherever possible, and contains documentation to explain the many quirks of Urbit address space to a new user.
+Monkey (%monkey) is an app and agent that binds to eyre and intercepts/relays requests to allow you to:
 
-# Justification
-There should be a place on Urbit to explore Urbit address space. It will help new Urbiters get their bearings, and be a useful tool for anyone who wants to explore. Having open-source tools for this in one place _on Urbit_ is important.
-I like the name _Monkey_, because it's an old-timey guide to the heavenly bodies. _Planisphere_ could also be cool.
+- inject your code into http responses from other apps
+  (poor man's chrome extension, but for Urbit)
+- define and handle custom `web+urbitgraph://` links,
+  so you can actually redirect to your app
+  and then render something relevant
+
+Monkey is used in the background by other apps. For now, there's nothing to do with Monkey as a user, but hopefully one day it will have an app store and management UI for extensions.
 
 # Proposal
-You can read about the proposal [here](https://urbit.org/grants/monkey), and discuss in the dedicated group on Urbit: `~poster-hoster-midlev-mindyr/monkey`
+You can read the proposal and discuss in the dedicated group on Urbit: `~poster-hoster-midlev-mindyr/monkey`
 
 # The Code
 ## Desk
