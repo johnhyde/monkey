@@ -1,0 +1,64 @@
+;>
+# How to Patch Groups
+
+So you want to add some cool feature to Groups, eh? Well, lucky for you, you can do just that by writing a bit of Javascript, pasting it as a cord in dojo, and then sending a poke to Monkey with the JS and some info on what to do with it.
+
+## Writing the JS
+
+We can use Monkey to patch code into any file, but probably the simplest option is to inject a bit of JS at the beginning of `desk.js`, since it's a tiny file that is requested on every page, and the filename won't change between versions. You can use your browser's inspector to develop your own patch, but here's a very simple example for inserting a button in the Groups profile card.
+
+```
+setInterval(() => {
+  const spans = document.querySelectorAll('section > div > div > div > span > span:first-child');
+  spans.forEach((span) => {
+    if (span.innerHTML !== '~') return;
+    let cspan = span.parentElement;
+    if (cspan.nextSibling) return;
+    let c = cspan.parentElement;
+    let patp = cspan.innerText;
+    let button = document.createElement('a');
+    button.innerHTML = "New Button";
+    c.appendChild(button);
+  });
+}, 100);
+```
+
+As you can see, the hardest task for something like this is finding the actual element you want to modify. To put the button to the right of the @p, we have to find the profile card, find the right span (taking into account the possibility of a nickname span next to the @p span), and then make sure we haven't already added the button.
+
+If you take this approach of running some patch code repeatedly with `setInterval()`, make sure you don't edit the same element more times than you mean to.
+
+## Getting the JS into Dojo
+
+Once you've written some working patch code, you'll want to store it in dojo with a face. Pasting multiline strings is a bit interesting in dojo, so here's what you do.
+
+1. Put your js in a text editor with three quotes `'''` as the first and last lines. Triple quotes are used for multiline cord literals in hoon. E.g.:
+```
+'''
+someJS();
+someMore();
+'''
+```
+
+2. Paste all that into dojo and hit enter.
+
+3. Copy the escaped output, e.g. `'someJS();\0asomeMore();'`
+
+4. Type `=thatch`, a space, and then paste the escaped cord to store it as `thatch`. Pasting the multiline cord here does not work as of April 2023, so we use the escaped singleline cord.
+
+## Poke Monkey
+
+Now we need to tell Monkey about this. Here's a dojo poke that will install `thatch` (the js cord from the previous section) as a patch for Groups.
+
+```
+:monkey &patch [/my-custom-groups-button /apps/groups [[%cord '/apps/groups/desk.js'] [%before "."] thatch]]
+```
+
+The path `/my-custom-groups-button` is just an arbitrary id (called a `latch`). Something more structured and descriptive, like `/groups/local/custom-button`, might be advisable.
+
+This patch will watch for any requests on the `/apps/groups` path, but will only patch requests exactly matching `/apps/groups/desk.js`. `[%before "."]` means that the code will be injected in `desk.js` before the text that matches the regex `/./`. This regex matches everything, so the code will be injected at the beginning of the file. Hopefully you remembered the final semicolon in your JS!
+
+If you poke Monkey on a ship where Monkey isn't installed, nothing will happen. However, if Monkey is installed later it should then install the patch as well.
+
+## Sharing with the world
+
+I hope someday to have an app store for Monkey where you can easily share and install patches, but for now, the easiest way to share a patch is in an agent in a desk. When someone installs your desk and runs your agent, the agent should poke Monkey with the same noun we passed in through the dojo. See [the patch API doc](/docs/monkey/dev/patch) for details on how to poke Monkey from a Gall agent.

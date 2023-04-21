@@ -2,5 +2,6 @@
 /usr                      User
   /monkey/udon            About Monkey
 /dev                      Developer
-  /patch/udon             How to Patch Other Apps
+  /patch/udon             Patch API
+  /patch-example/udon     How to Patch Groups
   /urbitgraph/udon        How to Handle web+urbitgraph Links
