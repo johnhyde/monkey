@@ -50,6 +50,10 @@
   =/  old  !<(versioned-state old-state)
   =.  state  old
   `this
+  :: :_  this
+  :: :~
+  ::   [%pass /kiln-kill %arvo %c %tire ~ ~]
+  :: ==
   ::
 ++  on-poke
   |=  [=mark =vase]
@@ -288,14 +292,36 @@
 ++  on-arvo
   |=  [=wire =sign-arvo]
   ^-  (quip card _this)
-  ?.  ?=([%eyre-test *] wire)
-    (on-arvo:def [wire sign-arvo])
-  ?>  ?=([%eyre %bound *] sign-arvo)
-  ?:  accepted.sign-arvo
-    %-  (slog leaf+"Monkey bound to {<path.binding.sign-arvo>} successfully!" ~)
+  ?+  wire  (on-arvo:def [wire sign-arvo])
+      [%kiln-kill *]
+    ?>  ?=([%clay %tire *] sign-arvo)
+    =/  live  ^-  (unit ?)
+      :: ~&  zest:(~(got by p.p.sign-arvo) %monkey)
+      ?:  ?=(%.y -.p.sign-arvo)
+        ?>  ?=([^ *] p.p.sign-arvo)
+        %-  some
+        .=  %live
+        ^-  zest:tire:clay
+        =<  zest
+        %-  %~  got
+              by
+            ^-  rock:tire:clay
+            p.p.sign-arvo
+        %monkey
+        :: =(%live zest:(~(gut by p.p.sign-arvo) %monkey [zest=%dead wic=~]))
+      ?.  ?=([%zest %monkey *] p.p.sign-arvo)
+        ~
+      %-  some  =(%live zest.p.p.sign-arvo)  
+    ~&  live+live
     `this
-  %-  (slog leaf+"Monkey failed to bind to {<path.binding.sign-arvo>}!" ~)
-  `this
+      [%eyre-test *]
+    ?>  ?=([%eyre %bound *] sign-arvo)
+    ?:  accepted.sign-arvo
+      %-  (slog leaf+"Monkey bound to {<path.binding.sign-arvo>} successfully!" ~)
+      `this
+    %-  (slog leaf+"Monkey failed to bind to {<path.binding.sign-arvo>}!" ~)
+    `this
+  ==
 ++  on-fail  on-fail:def
 --
 ::
