@@ -3,21 +3,27 @@
 |%
 +$  versioned-state
   $%  state-0
+      state-1
   ==
-+$  state-0
-  $:  %0
-    :: =shirts
-    shirts=(map watch shirt)
-    pants=(mip watch latch pitch)
-    chaps=(map latch watch)
-    uggs=(map path ugg)
-    pins=(map @t request:http)
++$  clothes
+  $:  shirts=(map watch shirt)
+      pants=(mip watch latch pitch)
+      chaps=(map latch watch)
+      uggs=(map path ugg)
+      pins=(map @t request:http)
   ==
++$  state-0  [%0 clothes]
++$  state-1
+  $:  %1
+      live=_%.y
+      clothes
+  ==
++$  current-state  state-1
 ::
 +$  card  card:agent:gall
 --
 %-  agent:dbug
-=|  state-0
+=|  current-state
 =*  state  -
 ^-  agent:gall
 =<
@@ -28,9 +34,8 @@
 ::
 ++  on-init
   ^-  (quip card _this)
-  :: ~&  "monkey: ++  on-init"
-  =^  cards  state
-      (bind-path:hc /apps/grid/perma)
+  :: ~&  "%monkey: on-init"
+  =^  cards  state  setup:hc
   :_  this
   :*
     [%pass /kiln-kill %arvo %c %tire ~ ~]
@@ -40,26 +45,34 @@
   ==
 ::
 ++  on-save  
-  ~&  "monkey: ++  on-save"
+  ~&  "%monkey: on-save"
   !>(state)
 ++  on-load
   |=  old-state=vase
-  ^-  (quip card _this)
-  ~&  "monkey: ++  on-load"
-  ::
-  :: =/  old  *state-0
-  :: =.  state  old
-  :: =^  cards  state
-  ::     (bind-path:hc /apps/grid/perma)
-  :: cards^this
-  =/  old  !<(versioned-state old-state)
-  =.  state  old
-  :: `this
-  :_  this
-  :~
-    [%pass /kiln-kill %arvo %c %tire ~ ~]
+  ~&  "%monkey: on-load"
+  |^  ^-  (quip card _this)
+  =+  :-  cards=`(list card)`~
+      old=!<(versioned-state old-state)
+  =*  quipe  -
+  =?  quipe  ?=(%0 -.old)
+    (state-0-to-1 cards old)
+  :: =.  quipe  (bind-path:hc /apps/grid/perma)
+  ?>  ?=(current-state old)
+  :: =/  old  *state-1
+  =.  cards  :*
+    :: [%pass /kiln-kill %arvo %c %tire ~ ~]
     :: [%pass /kiln-kill %arvo %c %tire ~]
+    cards
   ==
+  =.  state  old
+  cards^this
+  ++  state-0-to-1
+    |=  [cards=(list card) old=state-0]
+    ^-  (quip card state-1)
+    :-  :-  [%pass /kiln-kill %arvo %c %tire ~ ~]
+        cards
+    [%1 %.y +.old]
+  --
   ::
 ++  on-poke
   |=  [=mark =vase]
@@ -297,14 +310,14 @@
   ==
 ++  on-arvo
   |=  [=wire =sign-arvo]
-  ~&  "monkey: ++  on-arvo"
+  ~&  "%monkey: on-arvo"
   ^-  (quip card _this)
   ?+  wire  (on-arvo:def [wire sign-arvo])
       [%kiln-kill *]
     ?>  ?=([%clay %tire *] sign-arvo)
     =/  live  ^-  (unit ?)
-      :: ~&  zest:(~(got by p.p.sign-arvo) %monkey)
       ?:  ?=(%.y -.p.sign-arvo)
+        ~&  "got rock:tire"
         ?>  ?=([^ *] p.p.sign-arvo)
         %-  some
         .=  %live
@@ -318,6 +331,7 @@
         :: =(%live zest:(~(gut by p.p.sign-arvo) %monkey [zest=%dead wic=~]))
       ?.  ?=([%zest %monkey *] p.p.sign-arvo)
         ~
+      ~&  "got wave:tire"
       %-  some  =(%live zest.p.p.sign-arvo)  
     ~&  live+live
     `this
@@ -343,6 +357,10 @@
 ++  get-shirts
   ^-  (quip card ^shirts)
   (merge-shirts get-eyre-shirts shirts)
+++  update-shirts
+  ^-  (quip card state)
+  =^  cards  shirts  get-shirts
+  cards^state
 ++  our-shirts
   ^-  (list [watch shirt])
   %+  murn  ~(tap by shirts)
@@ -367,13 +385,18 @@
 ::   `(crip (en-xml:html p.mme))::  +find-suffix: returns [~ /tail] if :full is (weld :prefix /tail)
 ::
 ++  reset
-  :_  *state-0
+  ^-  (quip card _state)
+  :_  *current-state
   %+  roll  our-shirts
     |=  [[=watch =shirt] cards=(list card)]
     :-  (disconnect-card watch)
     cards
 ::
-++  setup  (bind-path /apps/grid/perma)
+++  
+::
+++  setup
+  ^-  (quip card _state)
+  (bind-path /apps/grid/perma)
 
 ++  put-shirt
   |=  [=watch =shirt]
