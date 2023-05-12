@@ -28,19 +28,24 @@
 ::
 ++  on-init
   ^-  (quip card _this)
+  :: ~&  "monkey: ++  on-init"
   =^  cards  state
       (bind-path:hc /apps/grid/perma)
   :_  this
-  cards
-  :: :~
+  :*
+    [%pass /kiln-kill %arvo %c %tire ~ ~]
   ::   [%pass /eyre-test %arvo %e %connect [~ /apps/astrolabe] %monkey]
   ::   [%pass /eyre-test %arvo %e %connect [~ /apps/] %monkey]
-  :: ==
+    cards
+  ==
 ::
-++  on-save  !>(state)
+++  on-save  
+  ~&  "monkey: ++  on-save"
+  !>(state)
 ++  on-load
   |=  old-state=vase
   ^-  (quip card _this)
+  ~&  "monkey: ++  on-load"
   ::
   :: =/  old  *state-0
   :: =.  state  old
@@ -49,11 +54,12 @@
   :: cards^this
   =/  old  !<(versioned-state old-state)
   =.  state  old
-  `this
-  :: :_  this
-  :: :~
-  ::   [%pass /kiln-kill %arvo %c %tire ~ ~]
-  :: ==
+  :: `this
+  :_  this
+  :~
+    [%pass /kiln-kill %arvo %c %tire ~ ~]
+    :: [%pass /kiln-kill %arvo %c %tire ~]
+  ==
   ::
 ++  on-poke
   |=  [=mark =vase]
@@ -291,6 +297,7 @@
   ==
 ++  on-arvo
   |=  [=wire =sign-arvo]
+  ~&  "monkey: ++  on-arvo"
   ^-  (quip card _this)
   ?+  wire  (on-arvo:def [wire sign-arvo])
       [%kiln-kill *]
