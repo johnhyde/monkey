@@ -8,5 +8,7 @@
 .^(noun %gx /=/monkey/=/patches/noun)
 
 :monkey &patch [/astrolabe/test /apps/astrolabe [%path [%before "<script"] '<script>alert("you\'ve been hacked")</script>']]
+:monkey &patch [/pals/test /pals [%path [%after "<head>"] '<script>alert("you\'ve been hacked")</script>']]
+:monkey &patch [/cliff/test /cliff [%all [%after "<head>"] '<script>alert("you\'ve been hacked")</script>']]
 
 :monkey &patch [/groups/astrolabe/link /apps/groups [[%cord '/apps/groups/desk.js'] [%before "."] t]]

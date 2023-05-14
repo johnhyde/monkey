@@ -36,7 +36,7 @@
   ?~  sv
     ?~  ev  `~
     ?:  ours.u.ev
-      ~[(disconnect-card k)]~
+      ~[(connect-card k) (disconnect-card k)]~
     `ev
   ?~  ev
     ?.  ours.u.sv
@@ -106,15 +106,25 @@
 ::
 ++  connect-card
   |=  =path
+  ^-  card
   [%pass /eyre-test %arvo %e %connect [~ path] %monkey]
 ::
 ++  connect-card-app
   |=  [=path app=term]
+  ^-  card
   [%pass /eyre-test %arvo %e %connect [~ path] app]
 ::
 ++  disconnect-card
   |=  =path
+  ^-  card
   [%pass /eyre-test %arvo %e %disconnect [~ path]]
+::
+++  unbind-card
+  |=  [=path =app]
+  ^-  card
+  ?~  app
+    (disconnect-card path)
+  (connect-card-app path u.app)
 ::
 ++  apply-pitch
   |=  [=pitch data=octs req=request:http]
@@ -123,8 +133,7 @@
   =/  caught  (catch-req patch.pitch req)
   ?.  caught
     data
-  :: ~&  "size of file to patch"
-  :: ~&  p.data
+  :: ~&  "caught by {<catch.patch.pitch>}"
   :: ~&  "check sanity"
   ?.  ((saner %t) q.data)  data
   :: ~&  "sanity checked"
@@ -151,8 +160,8 @@
   ^-  octs
   :: ~&  "attempt sander"
   =/  text  ((sander %t) q.data)
-  :: ~&  "attempted sander"
   ?~  text  data
+  :: ~&  "sandered"
   %-  ta-to-octs
   (thatch-hatch thatch.patch hatch.patch u.text)
 ::
@@ -331,9 +340,11 @@
         $(inx +(inx))
     ==
   |-  ^-  ?
+  :: ~&  "inx: {<inx>}"
   ?:  =(inx len)  &
   =+  cur=(cut 3 [inx 1] b)
   ?:  &((lth cur 32) !=(10 cur))  |
+  :: ?:  &((lth cur 32) !=(10 cur))  ~&("illegal: {<cur>}" |)
   =+  tef=(teff cur)
   ::  ==
   ?&  ?|

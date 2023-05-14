@@ -3,7 +3,7 @@
 |%
 +$  versioned-state
   $%  state-0
-      state-1
+      :: state-1
   ==
 +$  clothes
   $:  shirts=(map watch shirt)
@@ -18,7 +18,7 @@
       live=_%.y
       clothes
   ==
-+$  current-state  state-1
++$  current-state  state-0
 ::
 +$  card  card:agent:gall
 --
@@ -45,27 +45,31 @@
   ==
 ::
 ++  on-save  
-  ~&  "%monkey: on-save"
+  :: ~&  "%monkey: on-save"
   !>(state)
+::
 ++  on-load
   |=  old-state=vase
-  ~&  "%monkey: on-load"
+  :: ~&  "%monkey: on-load"
   |^  ^-  (quip card _this)
   =+  :-  cards=`(list card)`~
       old=!<(versioned-state old-state)
-  =*  quipe  -
-  =?  quipe  ?=(%0 -.old)
-    (state-0-to-1 cards old)
-  :: =.  quipe  (bind-path:hc /apps/grid/perma)
-  ?>  ?=(current-state old)
-  :: =/  old  *state-1
+  =*  quop  -
+  :: =?  quop  ?=(%0 -.old)
+  ::   (state-0-to-1 cards old)
+  :: =.  quop  (bind-path:hc /apps/grid/perma)
+  ?>  =(-:*current-state -.old)
+  :: =/  old  *current-state
   =.  cards  :*
-    :: [%pass /kiln-kill %arvo %c %tire ~ ~]
+    [%pass /kiln-kill %arvo %c %tire ~ ~]
     :: [%pass /kiln-kill %arvo %c %tire ~]
     cards
   ==
   =.  state  old
-  cards^this
+  =^  shirt-cards  state  update-shirts:hc
+  :-  (weld cards shirt-cards)
+  this
+  ::
   ++  state-0-to-1
     |=  [cards=(list card) old=state-0]
     ^-  (quip card state-1)
@@ -73,7 +77,7 @@
         cards
     [%1 %.y +.old]
   --
-  ::
+::
 ++  on-poke
   |=  [=mark =vase]
   ^-  (quip card _this)
@@ -105,6 +109,10 @@
       ::
       %ls-shirts
     ~&  shirts
+    `this
+      ::
+      %ls-our-shirts
+    ~&  our-shirts:hc
     `this
       ::
       %ls-pants
@@ -288,17 +296,17 @@
         %fact
       ?+    p.cage.sign  (on-agent:def wire sign)
           %http-response-header
-        :: ~&  "htp res header received"
+        :: ~&  "http res header received"
         :_  this
         [%give %fact res-paths cage.sign]~
           ::
           %http-response-data
-        :: ~&  "htp res body received"
         =/  req  (~(get by pins) eyre-id)
         :_  this
         ?:  |(=(~ req) =(%relay -.wire))
           [%give %fact res-paths cage.sign]~
         ?>  ?=(^ req)
+        :: ~&  "http res body received for {<url.u.req>}"
         =/  data  !<((unit octs) q.cage.sign)
         =.  data  ?~  data  ~
           :: ~&  "size of file to patch"
@@ -310,31 +318,21 @@
   ==
 ++  on-arvo
   |=  [=wire =sign-arvo]
-  ~&  "%monkey: on-arvo"
+  :: ~&  "%monkey: on-arvo"
   ^-  (quip card _this)
   ?+  wire  (on-arvo:def [wire sign-arvo])
       [%kiln-kill *]
     ?>  ?=([%clay %tire *] sign-arvo)
-    =/  live  ^-  (unit ?)
-      ?:  ?=(%.y -.p.sign-arvo)
-        ~&  "got rock:tire"
-        ?>  ?=([^ *] p.p.sign-arvo)
-        %-  some
-        .=  %live
-        ^-  zest:tire:clay
-        =<  zest
-        %-  %~  got
-              by
-            ^-  rock:tire:clay
-            p.p.sign-arvo
-        %monkey
-        :: =(%live zest:(~(gut by p.p.sign-arvo) %monkey [zest=%dead wic=~]))
-      ?.  ?=([%zest %monkey *] p.p.sign-arvo)
-        ~
-      ~&  "got wave:tire"
-      %-  some  =(%live zest.p.p.sign-arvo)  
-    ~&  live+live
-    `this
+    :_  this
+    ?:  -.p.sign-arvo
+      ~
+    =*  wave  p.p.sign-arvo
+    ?.  ?=([%zest %monkey *] wave)
+      ~
+    ?:  =(%live zest.wave)  ~
+    =/  cards=(list card)  -:suspend:hc
+    %-  (slog leaf+"Monkey suspending {<(lent cards)>} bindings" ~)
+    cards
       [%eyre-test *]
     ?>  ?=([%eyre %bound *] sign-arvo)
     ?:  accepted.sign-arvo
@@ -356,9 +354,11 @@
   (bindings-to-shirts get-bindings)
 ++  get-shirts
   ^-  (quip card ^shirts)
+  :: ~&  get-eyre-shirts
+  :: =-  ~&  -<  -
   (merge-shirts get-eyre-shirts shirts)
 ++  update-shirts
-  ^-  (quip card state)
+  ^-  (quip card _state)
   =^  cards  shirts  get-shirts
   cards^state
 ++  our-shirts
@@ -392,7 +392,13 @@
     :-  (disconnect-card watch)
     cards
 ::
-++  
+++  suspend
+  ^-  (quip card _state)
+  :_  state
+  %+  roll  our-shirts
+    |=  [[=watch =shirt] cards=(list card)]
+    :-  (unbind-card watch app.shirt)
+    cards
 ::
 ++  setup
   ^-  (quip card _state)
@@ -428,9 +434,7 @@
   ?.  ours.u.ushirt
     `state
   :_  state(shirts (~(del by shirts) watch))
-  ?~  app.u.ushirt
-    [(disconnect-card watch)]~
-  [(connect-card-app watch u.app.u.ushirt)]~
+  [(unbind-card watch app.u.ushirt)]~
 ::
 ++  don-uggs
   |=  req=request-line
@@ -502,7 +506,7 @@
   ::  1MB limit on files
   ::  TODO: analyze available memory to decide?
   ?:  (gth p.data (bex 20))
-    :: %-  (slog leaf+"Monkey won't patch {<url.req>} because it's larger than 1MB" ~)
+    %-  (slog leaf+"Monkey won't patch {<url.req>} because it's larger than 1MB" ~)
     data
   =/  req-line  (parse-request-line url.req)
   =*  path  site.req-line
