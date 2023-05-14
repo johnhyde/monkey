@@ -15,7 +15,11 @@ You can read the proposal and discuss in the dedicated group on Urbit: `~poster-
 # The Code
 ## Desk
 
-The desk currently has the minimum amount of files necessary to distribute an application and should be distributable immediately. Any further Hoon development should happen here.
+The `desk` folder contains all monkey-specific files. `base-desk` contains other hoon files from various places.
+
+### Testing
+Tests go in `desk/tests`. To run a test, use the `test` thread in dojo, e.g.:
+`-test %%%/monkey/=/tests/lib/monkey ~`
 
 ## UI
 

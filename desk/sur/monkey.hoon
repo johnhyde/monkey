@@ -1,10 +1,13 @@
 /+  naive, *mip, re
 |%
-+$  shirts  (map watch shirt)
-+$  shirt
-  $:  ours=?
-      app=(unit term)  :: ~ means it's not an %app action
++$  shirts  (map watch shirt)  :: representations of eyre bindings
++$  shirt  :: representation of what eyre has bound to a path
+  $:  ours=?  :: ours=%.y - this path is bound to %monkey
+      =app  :: (unit term)
+      :: app=~ - it's not an %app action
+      :: app=[~ u=%app] - it is (or was) bound to %app
   ==
++$  app  (unit term)
 +$  shirt-old
   $:  =job
       =sliv

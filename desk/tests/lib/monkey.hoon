@@ -146,6 +146,8 @@
         :: [/e-only/ours [%.y ~]]
         :: eyre-only ours: disconn+remove
         :: we can't handle those reqs
+        :: note we connect and then disconnect
+        :: b/c sometimes eyre doesn't just diconnect
         ::
         :: [/s-only/no-app [%.n ~]]
         :: [/s-only/app [%.n `%app]]
@@ -191,6 +193,7 @@
       %-  silt  ^-  (list card:agent:gall)
       %-  limo
       :~
+        (connect-card /e-only/ours)
         (disconnect-card /e-only/ours)
         (disconnect-card /both/ours-diff/ours/a)
         (disconnect-card /both/ours-diff/ours/b)
