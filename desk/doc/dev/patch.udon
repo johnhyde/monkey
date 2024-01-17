@@ -49,7 +49,7 @@ Gall example:
 
 ```
 :: example poke card for patching %astrolabe
-=/  catch  [%cord '/apps/astrolabe']
+=/  catch  [%cord '/apps/astrolabe/']
 =/  hatch  [%before "<script"]
 =/  thatch  '<script>alert("you\'ve been hacked")</script>'
 =/  patch  [/apps/astrolabe catch hatch thatch]
