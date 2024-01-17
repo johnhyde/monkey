@@ -140,17 +140,16 @@
       :: patching
       ::
       %patch
-    =+  !<(=kit vase)
-    =,  kit
-    =*  watch  watch.patch
+    =+  !<(k=kit vase)
+    =*  watch  watch.patch.k
     =/  catch-valid
-      ?@  catch.patch  %.y
-      ?:  ?=([%regex *] catch.patch)
-        (valid:re `tape`+.catch.patch)
+      ?@  catch.patch.k  %.y
+      ?:  ?=([%regex *] catch.patch.k)
+        (valid:re ^-(tape +.catch.patch.k))
       %.y
     =/  hatch-valid
-      ?^  hatch.patch
-        (valid:re +.hatch.patch)
+      ?^  hatch.patch.k
+        (valid:re +.hatch.patch.k)
       %.y
     ?.  catch-valid
       ~|(%catch-regex-invalid !!)
@@ -158,14 +157,14 @@
       ~|(%hatch-regex-invalid !!)
     =^  cards  state
       (bind-path:hc watch)
-    =/  old-watch  (~(gut by chaps) latch watch)
+    =/  old-watch  (~(gut by chaps) latch.k watch)
     =^  chap-cards  state
       ?:  =(watch old-watch)
         `state
-      (rip-pants:hc old-watch latch)
-    =.  chaps  (~(put by chaps) latch watch)
+      (rip-pants:hc old-watch latch.k)
+    =.  chaps  (~(put by chaps) latch.k watch)
     ^-  (quip card _this)
-    =.  pants  (~(put bi pants) watch latch [*paste patch])
+    =.  pants  (~(put bi pants) watch latch.k [*paste patch.k])
     :_  this
     (weld cards chap-cards)
       ::

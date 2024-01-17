@@ -7,7 +7,7 @@
 .^((list [=binding:eyre =duct =action:eyre]) %e /=/bindings/=)
 .^(noun %gx /=/monkey/=/patches/noun)
 
-:monkey &patch [/astrolabe/test /apps/astrolabe/ [%path [%before "<script"] '<script>alert("you\'ve been hacked")</script>']]
+:monkey &patch [/astrolabe/test /apps/astrolabe [%path [%before "<script"] '<script>alert("you\'ve been hacked")</script>']]
 :monkey &patch [/pals/test /pals [%path [%after "<head>"] '<script>alert("you\'ve been hacked")</script>']]
 :monkey &patch [/cliff/test /cliff [%all [%after "<head>"] '<script>alert("you\'ve been hacked")</script>']]
 
